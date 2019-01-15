@@ -6,22 +6,23 @@ import (
 )
 
 const (
-	ResourceKindContainerTemplate     = "ContainerTemplate"
-	ResourcePluralContainerTemplate   = "containerTemplates"
-	ResourceSingularContainerTemplate = "containerTemplate"
+	ResourceKindAgentTemplate     = "AgentTemplate"
+	ResourcePluralAgentTemplate   = "agentTemplates"
+	ResourceSingularAgentTemplate = "agentTemplate"
 )
 
 // +genclient
+// +genclient:nonNamespaced
 // +k8s:openapi-gen=true
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-type ContainerTemplate struct {
+type AgentTemplate struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
-	Spec              ContainerTemplateSpec `json:"spec,omitempty"`
+	Spec              AgentTemplateSpec `json:"spec,omitempty"`
 }
 
-type ContainerTemplateSpec struct {
+type AgentTemplateSpec struct {
 	InitContainers []core.Container `json:"initContainers,omitempty"`
 	Containers     []core.Container `json:"containers"`
 	// List of volumes that can be mounted by containers belonging to the pod.
@@ -32,8 +33,8 @@ type ContainerTemplateSpec struct {
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-type ContainerTemplateList struct {
+type AgentTemplateList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []ContainerTemplate `json:"items,omitempty"`
+	Items           []AgentTemplate `json:"items,omitempty"`
 }

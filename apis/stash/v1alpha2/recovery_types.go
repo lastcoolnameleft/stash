@@ -31,21 +31,18 @@ type RecoverySpec struct {
 	// +optional
 	Snapshot string `json:"snapshot,omitempty"`
 	// Paths can be used to recover only specified directories from the backed up snapshot
-	// +optional
 	Paths []string `json:"paths,omitempty"`
 	// RecoverTo indicates the target where the recovered data will be stored
 	RecoverTo RecoveryTarget `json:"recoverTo,omitempty"`
 	// RecoveryPolicy specifies weather to recover only once or recover always when workload restart for a particular Recovery crd.
+	// +optional
 	RecoveryPolicy `json:"recoveryPolicy,omitempty"`
-	//ContainerAttributes allow to specify Env, Resources, SecurityContext etc. for backup sidecar or job's container
+	// ContainerAttributes allow to specify Resources, SecurityContext, ReadinessProbe etc. for recovery init container or job's container
 	//+optional
-	ContainerAttributes *core.Container `json:"containerAttributes,omitempty"`
-
-	// NodeSelector is a selector which must be true for the pod to fit on a node.
-	// Selector which must match a node's labels for the pod to be scheduled on that node.
-	// More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
-	NodeSelector     map[string]string           `json:"nodeSelector,omitempty"`
-	ImagePullSecrets []core.LocalObjectReference `json:"imagePullSecrets,omitempty"`
+	*ContainerAttributes `json:"containerAttributes,omitempty"`
+	// PodAttributes allow to specify NodeSelector, Affinity, Toleration etc. for recovery job's pod
+	//+optional
+	*PodAttributes `json:"podAttributes,omitempty"`
 }
 
 type RecoveryTarget struct {
@@ -54,7 +51,7 @@ type RecoveryTarget struct {
 	Volume *store.LocalSpec `json:"volume,omitempty"`
 	// ObjectRef refers to the workload when the recovery target is a running workload
 	// +optional
-	ObjectRef *core.ObjectReference `json:"objectRef,omitempty"`
+	Workload *WorkloadRef `json:"workload,omitempty"`
 }
 
 type RecoveryPolicy string

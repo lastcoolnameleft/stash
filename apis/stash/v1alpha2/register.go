@@ -40,8 +40,8 @@ func addKnownTypes(scheme *runtime.Scheme) error {
 		&RepositoryList{},
 		&BackupTemplate{},
 		&BackupTemplateList{},
-		&ContainerTemplate{},
-		&ContainerTemplateList{},
+		&AgentTemplate{},
+		&AgentTemplateList{},
 		&BackupTrigger{},
 		&BackupTriggerList{},
 	)

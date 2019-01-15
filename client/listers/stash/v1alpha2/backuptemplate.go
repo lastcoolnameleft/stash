@@ -29,8 +29,8 @@ import (
 type BackupTemplateLister interface {
 	// List lists all BackupTemplates in the indexer.
 	List(selector labels.Selector) (ret []*v1alpha2.BackupTemplate, err error)
-	// BackupTemplates returns an object that can list and get BackupTemplates.
-	BackupTemplates(namespace string) BackupTemplateNamespaceLister
+	// Get retrieves the BackupTemplate from the index for a given name.
+	Get(name string) (*v1alpha2.BackupTemplate, error)
 	BackupTemplateListerExpansion
 }
 
@@ -52,38 +52,9 @@ func (s *backupTemplateLister) List(selector labels.Selector) (ret []*v1alpha2.B
 	return ret, err
 }
 
-// BackupTemplates returns an object that can list and get BackupTemplates.
-func (s *backupTemplateLister) BackupTemplates(namespace string) BackupTemplateNamespaceLister {
-	return backupTemplateNamespaceLister{indexer: s.indexer, namespace: namespace}
-}
-
-// BackupTemplateNamespaceLister helps list and get BackupTemplates.
-type BackupTemplateNamespaceLister interface {
-	// List lists all BackupTemplates in the indexer for a given namespace.
-	List(selector labels.Selector) (ret []*v1alpha2.BackupTemplate, err error)
-	// Get retrieves the BackupTemplate from the indexer for a given namespace and name.
-	Get(name string) (*v1alpha2.BackupTemplate, error)
-	BackupTemplateNamespaceListerExpansion
-}
-
-// backupTemplateNamespaceLister implements the BackupTemplateNamespaceLister
-// interface.
-type backupTemplateNamespaceLister struct {
-	indexer   cache.Indexer
-	namespace string
-}
-
-// List lists all BackupTemplates in the indexer for a given namespace.
-func (s backupTemplateNamespaceLister) List(selector labels.Selector) (ret []*v1alpha2.BackupTemplate, err error) {
-	err = cache.ListAllByNamespace(s.indexer, s.namespace, selector, func(m interface{}) {
-		ret = append(ret, m.(*v1alpha2.BackupTemplate))
-	})
-	return ret, err
-}
-
-// Get retrieves the BackupTemplate from the indexer for a given namespace and name.
-func (s backupTemplateNamespaceLister) Get(name string) (*v1alpha2.BackupTemplate, error) {
-	obj, exists, err := s.indexer.GetByKey(s.namespace + "/" + name)
+// Get retrieves the BackupTemplate from the index for a given name.
+func (s *backupTemplateLister) Get(name string) (*v1alpha2.BackupTemplate, error) {
+	obj, exists, err := s.indexer.GetByKey(name)
 	if err != nil {
 		return nil, err
 	}

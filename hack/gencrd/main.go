@@ -49,7 +49,7 @@ func generateCRDDefinitions() {
 		stashv1alpha2.Recovery{}.CustomResourceDefinition(),
 		stashv1alpha2.Repository{}.CustomResourceDefinition(),
 		stashv1alpha2.BackupTemplate{}.CustomResourceDefinition(),
-		stashv1alpha2.ContainerTemplate{}.CustomResourceDefinition(),
+		stashv1alpha2.AgentTemplate{}.CustomResourceDefinition(),
 		stashv1alpha2.BackupTrigger{}.CustomResourceDefinition(),
 	}
 	genCRD(stashv1alpha2.SchemeGroupVersion.Version, v1alpha2CRDs)
@@ -115,14 +115,13 @@ func generateSwaggerJson() {
 			{stashv1alpha2.SchemeGroupVersion, stashv1alpha2.ResourcePluralRepository, stashv1alpha2.ResourceKindRepository, true},
 			{stashv1alpha2.SchemeGroupVersion, stashv1alpha2.ResourcePluralRecovery, stashv1alpha2.ResourceKindRecovery, true},
 			{stashv1alpha2.SchemeGroupVersion, stashv1alpha2.ResourcePluralBackupTemplate, stashv1alpha2.ResourceKindBackupTemplate, false},
-			{stashv1alpha2.SchemeGroupVersion, stashv1alpha2.ResourcePluralContainerTemplate, stashv1alpha2.ResourceKindContainerTemplate, false},
+			{stashv1alpha2.SchemeGroupVersion, stashv1alpha2.ResourcePluralAgentTemplate, stashv1alpha2.ResourceKindAgentTemplate, false},
 			{stashv1alpha2.SchemeGroupVersion, stashv1alpha2.ResourcePluralBackupTrigger, stashv1alpha2.ResourceKindBackupTrigger, true},
 		},
 		RDResources: []openapi.TypeInfo{
 			{repov1alpha1.SchemeGroupVersion, repov1alpha1.ResourcePluralSnapshot, repov1alpha1.ResourceKindSnapshot, true},
 		},
 	})
-
 	if err != nil {
 		glog.Fatal(err)
 	}
@@ -140,5 +139,5 @@ func generateSwaggerJson() {
 
 func main() {
 	generateCRDDefinitions()
-	generateSwaggerJson()
+	//generateSwaggerJson()
 }

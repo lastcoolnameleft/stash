@@ -30,7 +30,7 @@ import (
 // BackupTemplatesGetter has a method to return a BackupTemplateInterface.
 // A group's client should implement this interface.
 type BackupTemplatesGetter interface {
-	BackupTemplates(namespace string) BackupTemplateInterface
+	BackupTemplates() BackupTemplateInterface
 }
 
 // BackupTemplateInterface has methods to work with BackupTemplate resources.
@@ -49,14 +49,12 @@ type BackupTemplateInterface interface {
 // backupTemplates implements BackupTemplateInterface
 type backupTemplates struct {
 	client rest.Interface
-	ns     string
 }
 
 // newBackupTemplates returns a BackupTemplates
-func newBackupTemplates(c *StashV1alpha2Client, namespace string) *backupTemplates {
+func newBackupTemplates(c *StashV1alpha2Client) *backupTemplates {
 	return &backupTemplates{
 		client: c.RESTClient(),
-		ns:     namespace,
 	}
 }
 
@@ -64,7 +62,6 @@ func newBackupTemplates(c *StashV1alpha2Client, namespace string) *backupTemplat
 func (c *backupTemplates) Get(name string, options v1.GetOptions) (result *v1alpha2.BackupTemplate, err error) {
 	result = &v1alpha2.BackupTemplate{}
 	err = c.client.Get().
-		Namespace(c.ns).
 		Resource("backuptemplates").
 		Name(name).
 		VersionedParams(&options, scheme.ParameterCodec).
@@ -77,7 +74,6 @@ func (c *backupTemplates) Get(name string, options v1.GetOptions) (result *v1alp
 func (c *backupTemplates) List(opts v1.ListOptions) (result *v1alpha2.BackupTemplateList, err error) {
 	result = &v1alpha2.BackupTemplateList{}
 	err = c.client.Get().
-		Namespace(c.ns).
 		Resource("backuptemplates").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Do().
@@ -89,7 +85,6 @@ func (c *backupTemplates) List(opts v1.ListOptions) (result *v1alpha2.BackupTemp
 func (c *backupTemplates) Watch(opts v1.ListOptions) (watch.Interface, error) {
 	opts.Watch = true
 	return c.client.Get().
-		Namespace(c.ns).
 		Resource("backuptemplates").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Watch()
@@ -99,7 +94,6 @@ func (c *backupTemplates) Watch(opts v1.ListOptions) (watch.Interface, error) {
 func (c *backupTemplates) Create(backupTemplate *v1alpha2.BackupTemplate) (result *v1alpha2.BackupTemplate, err error) {
 	result = &v1alpha2.BackupTemplate{}
 	err = c.client.Post().
-		Namespace(c.ns).
 		Resource("backuptemplates").
 		Body(backupTemplate).
 		Do().
@@ -111,7 +105,6 @@ func (c *backupTemplates) Create(backupTemplate *v1alpha2.BackupTemplate) (resul
 func (c *backupTemplates) Update(backupTemplate *v1alpha2.BackupTemplate) (result *v1alpha2.BackupTemplate, err error) {
 	result = &v1alpha2.BackupTemplate{}
 	err = c.client.Put().
-		Namespace(c.ns).
 		Resource("backuptemplates").
 		Name(backupTemplate.Name).
 		Body(backupTemplate).
@@ -123,7 +116,6 @@ func (c *backupTemplates) Update(backupTemplate *v1alpha2.BackupTemplate) (resul
 // Delete takes name of the backupTemplate and deletes it. Returns an error if one occurs.
 func (c *backupTemplates) Delete(name string, options *v1.DeleteOptions) error {
 	return c.client.Delete().
-		Namespace(c.ns).
 		Resource("backuptemplates").
 		Name(name).
 		Body(options).
@@ -134,7 +126,6 @@ func (c *backupTemplates) Delete(name string, options *v1.DeleteOptions) error {
 // DeleteCollection deletes a collection of objects.
 func (c *backupTemplates) DeleteCollection(options *v1.DeleteOptions, listOptions v1.ListOptions) error {
 	return c.client.Delete().
-		Namespace(c.ns).
 		Resource("backuptemplates").
 		VersionedParams(&listOptions, scheme.ParameterCodec).
 		Body(options).
@@ -146,7 +137,6 @@ func (c *backupTemplates) DeleteCollection(options *v1.DeleteOptions, listOption
 func (c *backupTemplates) Patch(name string, pt types.PatchType, data []byte, subresources ...string) (result *v1alpha2.BackupTemplate, err error) {
 	result = &v1alpha2.BackupTemplate{}
 	err = c.client.Patch(pt).
-		Namespace(c.ns).
 		Resource("backuptemplates").
 		SubResource(subresources...).
 		Name(name).

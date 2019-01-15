@@ -24,14 +24,14 @@ import (
 
 // Interface provides access to all the informers in this group version.
 type Interface interface {
+	// AgentTemplates returns a AgentTemplateInformer.
+	AgentTemplates() AgentTemplateInformer
 	// Backups returns a BackupInformer.
 	Backups() BackupInformer
 	// BackupTemplates returns a BackupTemplateInformer.
 	BackupTemplates() BackupTemplateInformer
 	// BackupTriggers returns a BackupTriggerInformer.
 	BackupTriggers() BackupTriggerInformer
-	// ContainerTemplates returns a ContainerTemplateInformer.
-	ContainerTemplates() ContainerTemplateInformer
 	// Recoveries returns a RecoveryInformer.
 	Recoveries() RecoveryInformer
 	// Repositories returns a RepositoryInformer.
@@ -49,6 +49,11 @@ func New(f internalinterfaces.SharedInformerFactory, namespace string, tweakList
 	return &version{factory: f, namespace: namespace, tweakListOptions: tweakListOptions}
 }
 
+// AgentTemplates returns a AgentTemplateInformer.
+func (v *version) AgentTemplates() AgentTemplateInformer {
+	return &agentTemplateInformer{factory: v.factory, tweakListOptions: v.tweakListOptions}
+}
+
 // Backups returns a BackupInformer.
 func (v *version) Backups() BackupInformer {
 	return &backupInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
@@ -56,17 +61,12 @@ func (v *version) Backups() BackupInformer {
 
 // BackupTemplates returns a BackupTemplateInformer.
 func (v *version) BackupTemplates() BackupTemplateInformer {
-	return &backupTemplateInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+	return &backupTemplateInformer{factory: v.factory, tweakListOptions: v.tweakListOptions}
 }
 
 // BackupTriggers returns a BackupTriggerInformer.
 func (v *version) BackupTriggers() BackupTriggerInformer {
 	return &backupTriggerInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
-}
-
-// ContainerTemplates returns a ContainerTemplateInformer.
-func (v *version) ContainerTemplates() ContainerTemplateInformer {
-	return &containerTemplateInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }
 
 // Recoveries returns a RecoveryInformer.

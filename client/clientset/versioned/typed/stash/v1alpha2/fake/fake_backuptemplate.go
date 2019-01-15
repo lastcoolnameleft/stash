@@ -31,7 +31,6 @@ import (
 // FakeBackupTemplates implements BackupTemplateInterface
 type FakeBackupTemplates struct {
 	Fake *FakeStashV1alpha2
-	ns   string
 }
 
 var backuptemplatesResource = schema.GroupVersionResource{Group: "stash.appscode.com", Version: "v1alpha2", Resource: "backuptemplates"}
@@ -41,8 +40,7 @@ var backuptemplatesKind = schema.GroupVersionKind{Group: "stash.appscode.com", V
 // Get takes name of the backupTemplate, and returns the corresponding backupTemplate object, and an error if there is any.
 func (c *FakeBackupTemplates) Get(name string, options v1.GetOptions) (result *v1alpha2.BackupTemplate, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewGetAction(backuptemplatesResource, c.ns, name), &v1alpha2.BackupTemplate{})
-
+		Invokes(testing.NewRootGetAction(backuptemplatesResource, name), &v1alpha2.BackupTemplate{})
 	if obj == nil {
 		return nil, err
 	}
@@ -52,8 +50,7 @@ func (c *FakeBackupTemplates) Get(name string, options v1.GetOptions) (result *v
 // List takes label and field selectors, and returns the list of BackupTemplates that match those selectors.
 func (c *FakeBackupTemplates) List(opts v1.ListOptions) (result *v1alpha2.BackupTemplateList, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewListAction(backuptemplatesResource, backuptemplatesKind, c.ns, opts), &v1alpha2.BackupTemplateList{})
-
+		Invokes(testing.NewRootListAction(backuptemplatesResource, backuptemplatesKind, opts), &v1alpha2.BackupTemplateList{})
 	if obj == nil {
 		return nil, err
 	}
@@ -74,15 +71,13 @@ func (c *FakeBackupTemplates) List(opts v1.ListOptions) (result *v1alpha2.Backup
 // Watch returns a watch.Interface that watches the requested backupTemplates.
 func (c *FakeBackupTemplates) Watch(opts v1.ListOptions) (watch.Interface, error) {
 	return c.Fake.
-		InvokesWatch(testing.NewWatchAction(backuptemplatesResource, c.ns, opts))
-
+		InvokesWatch(testing.NewRootWatchAction(backuptemplatesResource, opts))
 }
 
 // Create takes the representation of a backupTemplate and creates it.  Returns the server's representation of the backupTemplate, and an error, if there is any.
 func (c *FakeBackupTemplates) Create(backupTemplate *v1alpha2.BackupTemplate) (result *v1alpha2.BackupTemplate, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewCreateAction(backuptemplatesResource, c.ns, backupTemplate), &v1alpha2.BackupTemplate{})
-
+		Invokes(testing.NewRootCreateAction(backuptemplatesResource, backupTemplate), &v1alpha2.BackupTemplate{})
 	if obj == nil {
 		return nil, err
 	}
@@ -92,8 +87,7 @@ func (c *FakeBackupTemplates) Create(backupTemplate *v1alpha2.BackupTemplate) (r
 // Update takes the representation of a backupTemplate and updates it. Returns the server's representation of the backupTemplate, and an error, if there is any.
 func (c *FakeBackupTemplates) Update(backupTemplate *v1alpha2.BackupTemplate) (result *v1alpha2.BackupTemplate, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewUpdateAction(backuptemplatesResource, c.ns, backupTemplate), &v1alpha2.BackupTemplate{})
-
+		Invokes(testing.NewRootUpdateAction(backuptemplatesResource, backupTemplate), &v1alpha2.BackupTemplate{})
 	if obj == nil {
 		return nil, err
 	}
@@ -103,14 +97,13 @@ func (c *FakeBackupTemplates) Update(backupTemplate *v1alpha2.BackupTemplate) (r
 // Delete takes name of the backupTemplate and deletes it. Returns an error if one occurs.
 func (c *FakeBackupTemplates) Delete(name string, options *v1.DeleteOptions) error {
 	_, err := c.Fake.
-		Invokes(testing.NewDeleteAction(backuptemplatesResource, c.ns, name), &v1alpha2.BackupTemplate{})
-
+		Invokes(testing.NewRootDeleteAction(backuptemplatesResource, name), &v1alpha2.BackupTemplate{})
 	return err
 }
 
 // DeleteCollection deletes a collection of objects.
 func (c *FakeBackupTemplates) DeleteCollection(options *v1.DeleteOptions, listOptions v1.ListOptions) error {
-	action := testing.NewDeleteCollectionAction(backuptemplatesResource, c.ns, listOptions)
+	action := testing.NewRootDeleteCollectionAction(backuptemplatesResource, listOptions)
 
 	_, err := c.Fake.Invokes(action, &v1alpha2.BackupTemplateList{})
 	return err
@@ -119,8 +112,7 @@ func (c *FakeBackupTemplates) DeleteCollection(options *v1.DeleteOptions, listOp
 // Patch applies the patch and returns the patched backupTemplate.
 func (c *FakeBackupTemplates) Patch(name string, pt types.PatchType, data []byte, subresources ...string) (result *v1alpha2.BackupTemplate, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewPatchSubresourceAction(backuptemplatesResource, c.ns, name, data, subresources...), &v1alpha2.BackupTemplate{})
-
+		Invokes(testing.NewRootPatchSubresourceAction(backuptemplatesResource, name, data, subresources...), &v1alpha2.BackupTemplate{})
 	if obj == nil {
 		return nil, err
 	}

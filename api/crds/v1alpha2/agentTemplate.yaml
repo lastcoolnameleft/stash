@@ -5,7 +5,7 @@ metadata:
   creationTimestamp: null
   labels:
     app: stash
-  name: containerTemplates.stash.appscode.com
+  name: agentTemplates.stash.appscode.com
 spec:
   additionalPrinterColumns:
   - JSONPath: .metadata.creationTimestamp
@@ -17,10 +17,10 @@ spec:
     - template
     - appscode
     kind: Backup
-    plural: containerTemplates
+    plural: agentTemplates
     shortNames:
-    - ctpl
-    singular: containerTemplate
+    - agent
+    singular: agentTemplate
   scope: Cluster
   subresources:
     status: {}

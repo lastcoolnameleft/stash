@@ -18,6 +18,10 @@ limitations under the License.
 
 package v1alpha2
 
+// AgentTemplateListerExpansion allows custom methods to be added to
+// AgentTemplateLister.
+type AgentTemplateListerExpansion interface{}
+
 // BackupListerExpansion allows custom methods to be added to
 // BackupLister.
 type BackupListerExpansion interface{}
@@ -30,10 +34,6 @@ type BackupNamespaceListerExpansion interface{}
 // BackupTemplateLister.
 type BackupTemplateListerExpansion interface{}
 
-// BackupTemplateNamespaceListerExpansion allows custom methods to be added to
-// BackupTemplateNamespaceLister.
-type BackupTemplateNamespaceListerExpansion interface{}
-
 // BackupTriggerListerExpansion allows custom methods to be added to
 // BackupTriggerLister.
 type BackupTriggerListerExpansion interface{}
@@ -41,14 +41,6 @@ type BackupTriggerListerExpansion interface{}
 // BackupTriggerNamespaceListerExpansion allows custom methods to be added to
 // BackupTriggerNamespaceLister.
 type BackupTriggerNamespaceListerExpansion interface{}
-
-// ContainerTemplateListerExpansion allows custom methods to be added to
-// ContainerTemplateLister.
-type ContainerTemplateListerExpansion interface{}
-
-// ContainerTemplateNamespaceListerExpansion allows custom methods to be added to
-// ContainerTemplateNamespaceLister.
-type ContainerTemplateNamespaceListerExpansion interface{}
 
 // RecoveryListerExpansion allows custom methods to be added to
 // RecoveryLister.

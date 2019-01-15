@@ -31,58 +31,58 @@ import (
 	cache "k8s.io/client-go/tools/cache"
 )
 
-// BackupTemplateInformer provides access to a shared informer and lister for
-// BackupTemplates.
-type BackupTemplateInformer interface {
+// AgentTemplateInformer provides access to a shared informer and lister for
+// AgentTemplates.
+type AgentTemplateInformer interface {
 	Informer() cache.SharedIndexInformer
-	Lister() v1alpha2.BackupTemplateLister
+	Lister() v1alpha2.AgentTemplateLister
 }
 
-type backupTemplateInformer struct {
+type agentTemplateInformer struct {
 	factory          internalinterfaces.SharedInformerFactory
 	tweakListOptions internalinterfaces.TweakListOptionsFunc
 }
 
-// NewBackupTemplateInformer constructs a new informer for BackupTemplate type.
+// NewAgentTemplateInformer constructs a new informer for AgentTemplate type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewBackupTemplateInformer(client versioned.Interface, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
-	return NewFilteredBackupTemplateInformer(client, resyncPeriod, indexers, nil)
+func NewAgentTemplateInformer(client versioned.Interface, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
+	return NewFilteredAgentTemplateInformer(client, resyncPeriod, indexers, nil)
 }
 
-// NewFilteredBackupTemplateInformer constructs a new informer for BackupTemplate type.
+// NewFilteredAgentTemplateInformer constructs a new informer for AgentTemplate type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewFilteredBackupTemplateInformer(client versioned.Interface, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
+func NewFilteredAgentTemplateInformer(client versioned.Interface, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
 	return cache.NewSharedIndexInformer(
 		&cache.ListWatch{
 			ListFunc: func(options v1.ListOptions) (runtime.Object, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.StashV1alpha2().BackupTemplates().List(options)
+				return client.StashV1alpha2().AgentTemplates().List(options)
 			},
 			WatchFunc: func(options v1.ListOptions) (watch.Interface, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.StashV1alpha2().BackupTemplates().Watch(options)
+				return client.StashV1alpha2().AgentTemplates().Watch(options)
 			},
 		},
-		&stashv1alpha2.BackupTemplate{},
+		&stashv1alpha2.AgentTemplate{},
 		resyncPeriod,
 		indexers,
 	)
 }
 
-func (f *backupTemplateInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
-	return NewFilteredBackupTemplateInformer(client, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
+func (f *agentTemplateInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
+	return NewFilteredAgentTemplateInformer(client, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
 }
 
-func (f *backupTemplateInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&stashv1alpha2.BackupTemplate{}, f.defaultInformer)
+func (f *agentTemplateInformer) Informer() cache.SharedIndexInformer {
+	return f.factory.InformerFor(&stashv1alpha2.AgentTemplate{}, f.defaultInformer)
 }
 
-func (f *backupTemplateInformer) Lister() v1alpha2.BackupTemplateLister {
-	return v1alpha2.NewBackupTemplateLister(f.Informer().GetIndexer())
+func (f *agentTemplateInformer) Lister() v1alpha2.AgentTemplateLister {
+	return v1alpha2.NewAgentTemplateLister(f.Informer().GetIndexer())
 }
