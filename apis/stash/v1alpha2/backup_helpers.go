@@ -16,7 +16,6 @@ func (b Backup) GetSpecHash() string {
 	return strconv.FormatUint(hash.Sum64(), 10)
 }
 
-
 func (bkp Backup) CustomResourceDefinition() *apiextensions.CustomResourceDefinition {
 	return crdutils.NewCustomResourceDefinition(crdutils.Config{
 		Group:         SchemeGroupVersion.Group,
