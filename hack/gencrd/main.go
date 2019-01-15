@@ -15,6 +15,7 @@ import (
 	repov1alpha1 "github.com/appscode/stash/apis/repositories/v1alpha1"
 	stashinstall "github.com/appscode/stash/apis/stash/install"
 	stashv1alpha1 "github.com/appscode/stash/apis/stash/v1alpha1"
+	stashv1alpha2 "github.com/appscode/stash/apis/stash/v1alpha2"
 	"github.com/go-openapi/spec"
 	"github.com/golang/glog"
 	crd_api "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1beta1"
@@ -29,18 +30,41 @@ func generateCRDDefinitions() {
 	filename := gort.GOPath() + "/src/github.com/appscode/stash/apis/stash/v1alpha1/crds.yaml"
 	os.Remove(filename)
 
-	err := os.MkdirAll(filepath.Join(gort.GOPath(), "/src/github.com/appscode/stash/api/crds"), 0755)
-	if err != nil {
-		log.Fatal(err)
-	}
+	path := gort.GOPath() + "/src/github.com/appscode/stash/api/crds/"
+	os.Remove(filepath.Join(path, "restic.yaml"))
+	os.Remove(filepath.Join(path, "recovery.yaml"))
+	os.Remove(filepath.Join(path, "repository.yaml"))
 
-	crds := []*crd_api.CustomResourceDefinition{
+	// generate "v1alpha1" crds
+	v1alpha1CRDs := []*crd_api.CustomResourceDefinition{
 		stashv1alpha1.Restic{}.CustomResourceDefinition(),
 		stashv1alpha1.Recovery{}.CustomResourceDefinition(),
 		stashv1alpha1.Repository{}.CustomResourceDefinition(),
 	}
+	genCRD(stashv1alpha1.SchemeGroupVersion.Version, v1alpha1CRDs)
+
+	// generate "v1alpha2" crds
+	v1alpha2CRDs := []*crd_api.CustomResourceDefinition{
+		stashv1alpha2.Backup{}.CustomResourceDefinition(),
+		stashv1alpha2.Recovery{}.CustomResourceDefinition(),
+		stashv1alpha2.Repository{}.CustomResourceDefinition(),
+		stashv1alpha2.BackupTemplate{}.CustomResourceDefinition(),
+		stashv1alpha2.ContainerTemplate{}.CustomResourceDefinition(),
+		stashv1alpha2.BackupTrigger{}.CustomResourceDefinition(),
+	}
+	genCRD(stashv1alpha2.SchemeGroupVersion.Version, v1alpha2CRDs)
+
+}
+
+func genCRD(version string, crds []*crd_api.CustomResourceDefinition) {
+
+	err := os.MkdirAll(filepath.Join(gort.GOPath(), "/src/github.com/appscode/stash/api/crds", version), 0755)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	for _, crd := range crds {
-		filename := filepath.Join(gort.GOPath(), "/src/github.com/appscode/stash/api/crds", crd.Spec.Names.Singular+".yaml")
+		filename := filepath.Join(gort.GOPath(), "/src/github.com/appscode/stash/api/crds", version, crd.Spec.Names.Singular+".yaml")
 		f, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
 		if err != nil {
 			log.Fatal(err)
@@ -49,6 +73,7 @@ func generateCRDDefinitions() {
 		f.Close()
 	}
 }
+
 func generateSwaggerJson() {
 	var (
 		Scheme = runtime.NewScheme()
@@ -76,17 +101,28 @@ func generateSwaggerJson() {
 		},
 		OpenAPIDefinitions: []common.GetOpenAPIDefinitions{
 			stashv1alpha1.GetOpenAPIDefinitions,
+			stashv1alpha2.GetOpenAPIDefinitions,
 			repov1alpha1.GetOpenAPIDefinitions,
 		},
 		Resources: []openapi.TypeInfo{
+			// v1alpha1 resources
 			{stashv1alpha1.SchemeGroupVersion, stashv1alpha1.ResourcePluralRestic, stashv1alpha1.ResourceKindRestic, true},
 			{stashv1alpha1.SchemeGroupVersion, stashv1alpha1.ResourcePluralRepository, stashv1alpha1.ResourceKindRepository, true},
 			{stashv1alpha1.SchemeGroupVersion, stashv1alpha1.ResourcePluralRecovery, stashv1alpha1.ResourceKindRecovery, true},
+
+			// v1alpha2 resources
+			{stashv1alpha2.SchemeGroupVersion, stashv1alpha2.ResourcePluralBackup, stashv1alpha2.ResourceKindBackup, true},
+			{stashv1alpha2.SchemeGroupVersion, stashv1alpha2.ResourcePluralRepository, stashv1alpha2.ResourceKindRepository, true},
+			{stashv1alpha2.SchemeGroupVersion, stashv1alpha2.ResourcePluralRecovery, stashv1alpha2.ResourceKindRecovery, true},
+			{stashv1alpha2.SchemeGroupVersion, stashv1alpha2.ResourcePluralBackupTemplate, stashv1alpha2.ResourceKindBackupTemplate, false},
+			{stashv1alpha2.SchemeGroupVersion, stashv1alpha2.ResourcePluralContainerTemplate, stashv1alpha2.ResourceKindContainerTemplate, false},
+			{stashv1alpha2.SchemeGroupVersion, stashv1alpha2.ResourcePluralBackupTrigger, stashv1alpha2.ResourceKindBackupTrigger, true},
 		},
 		RDResources: []openapi.TypeInfo{
 			{repov1alpha1.SchemeGroupVersion, repov1alpha1.ResourcePluralSnapshot, repov1alpha1.ResourceKindSnapshot, true},
 		},
 	})
+
 	if err != nil {
 		glog.Fatal(err)
 	}

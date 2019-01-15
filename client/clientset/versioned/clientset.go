@@ -21,6 +21,7 @@ package versioned
 import (
 	repositoriesv1alpha1 "github.com/appscode/stash/client/clientset/versioned/typed/repositories/v1alpha1"
 	stashv1alpha1 "github.com/appscode/stash/client/clientset/versioned/typed/stash/v1alpha1"
+	stashv1alpha2 "github.com/appscode/stash/client/clientset/versioned/typed/stash/v1alpha2"
 	discovery "k8s.io/client-go/discovery"
 	rest "k8s.io/client-go/rest"
 	flowcontrol "k8s.io/client-go/util/flowcontrol"
@@ -34,6 +35,7 @@ type Interface interface {
 	StashV1alpha1() stashv1alpha1.StashV1alpha1Interface
 	// Deprecated: please explicitly pick a version if possible.
 	Stash() stashv1alpha1.StashV1alpha1Interface
+	StashV1alpha2() stashv1alpha2.StashV1alpha2Interface
 }
 
 // Clientset contains the clients for groups. Each group has exactly one
@@ -42,6 +44,7 @@ type Clientset struct {
 	*discovery.DiscoveryClient
 	repositoriesV1alpha1 *repositoriesv1alpha1.RepositoriesV1alpha1Client
 	stashV1alpha1        *stashv1alpha1.StashV1alpha1Client
+	stashV1alpha2        *stashv1alpha2.StashV1alpha2Client
 }
 
 // RepositoriesV1alpha1 retrieves the RepositoriesV1alpha1Client
@@ -64,6 +67,11 @@ func (c *Clientset) StashV1alpha1() stashv1alpha1.StashV1alpha1Interface {
 // Please explicitly pick a version.
 func (c *Clientset) Stash() stashv1alpha1.StashV1alpha1Interface {
 	return c.stashV1alpha1
+}
+
+// StashV1alpha2 retrieves the StashV1alpha2Client
+func (c *Clientset) StashV1alpha2() stashv1alpha2.StashV1alpha2Interface {
+	return c.stashV1alpha2
 }
 
 // Discovery retrieves the DiscoveryClient
@@ -90,6 +98,10 @@ func NewForConfig(c *rest.Config) (*Clientset, error) {
 	if err != nil {
 		return nil, err
 	}
+	cs.stashV1alpha2, err = stashv1alpha2.NewForConfig(&configShallowCopy)
+	if err != nil {
+		return nil, err
+	}
 
 	cs.DiscoveryClient, err = discovery.NewDiscoveryClientForConfig(&configShallowCopy)
 	if err != nil {
@@ -104,6 +116,7 @@ func NewForConfigOrDie(c *rest.Config) *Clientset {
 	var cs Clientset
 	cs.repositoriesV1alpha1 = repositoriesv1alpha1.NewForConfigOrDie(c)
 	cs.stashV1alpha1 = stashv1alpha1.NewForConfigOrDie(c)
+	cs.stashV1alpha2 = stashv1alpha2.NewForConfigOrDie(c)
 
 	cs.DiscoveryClient = discovery.NewDiscoveryClientForConfigOrDie(c)
 	return &cs
@@ -114,6 +127,7 @@ func New(c rest.Interface) *Clientset {
 	var cs Clientset
 	cs.repositoriesV1alpha1 = repositoriesv1alpha1.New(c)
 	cs.stashV1alpha1 = stashv1alpha1.New(c)
+	cs.stashV1alpha2 = stashv1alpha2.New(c)
 
 	cs.DiscoveryClient = discovery.NewDiscoveryClient(c)
 	return &cs

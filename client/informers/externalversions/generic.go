@@ -22,6 +22,7 @@ import (
 	"fmt"
 
 	v1alpha1 "github.com/appscode/stash/apis/stash/v1alpha1"
+	v1alpha2 "github.com/appscode/stash/apis/stash/v1alpha2"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
 	cache "k8s.io/client-go/tools/cache"
 )
@@ -59,6 +60,20 @@ func (f *sharedInformerFactory) ForResource(resource schema.GroupVersionResource
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Stash().V1alpha1().Repositories().Informer()}, nil
 	case v1alpha1.SchemeGroupVersion.WithResource("restics"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Stash().V1alpha1().Restics().Informer()}, nil
+
+		// Group=stash.appscode.com, Version=v1alpha2
+	case v1alpha2.SchemeGroupVersion.WithResource("backups"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Stash().V1alpha2().Backups().Informer()}, nil
+	case v1alpha2.SchemeGroupVersion.WithResource("backuptemplates"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Stash().V1alpha2().BackupTemplates().Informer()}, nil
+	case v1alpha2.SchemeGroupVersion.WithResource("backuptriggers"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Stash().V1alpha2().BackupTriggers().Informer()}, nil
+	case v1alpha2.SchemeGroupVersion.WithResource("containertemplates"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Stash().V1alpha2().ContainerTemplates().Informer()}, nil
+	case v1alpha2.SchemeGroupVersion.WithResource("recoveries"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Stash().V1alpha2().Recoveries().Informer()}, nil
+	case v1alpha2.SchemeGroupVersion.WithResource("repositories"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Stash().V1alpha2().Repositories().Informer()}, nil
 
 	}
 
