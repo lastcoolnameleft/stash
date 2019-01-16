@@ -2,7 +2,6 @@ package v1alpha2
 
 import (
 	"github.com/appscode/go/encoding/json/types"
-	core "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	store "kmodules.xyz/objectstore-api/api/v1"
 )
@@ -26,7 +25,7 @@ type Recovery struct {
 
 type RecoverySpec struct {
 	// Repository refer to the Repository crd that hold backend information
-	Repository core.ObjectReference `json:"repository"`
+	Repository RepoRef `json:"repository"`
 	// Snapshot to recover. Default is latest snapshot.
 	// +optional
 	Snapshot string `json:"snapshot,omitempty"`
@@ -43,6 +42,11 @@ type RecoverySpec struct {
 	// PodAttributes allow to specify NodeSelector, Affinity, Toleration etc. for recovery job's pod
 	//+optional
 	*PodAttributes `json:"podAttributes,omitempty"`
+}
+
+type RepoRef struct {
+	Name      string `json:"name"`
+	Namespace string `json:"namespace"`
 }
 
 type RecoveryTarget struct {

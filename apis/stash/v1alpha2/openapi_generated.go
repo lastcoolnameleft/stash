@@ -56,6 +56,7 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"github.com/appscode/stash/apis/stash/v1alpha2.RecoverySpec":        schema_stash_apis_stash_v1alpha2_RecoverySpec(ref),
 		"github.com/appscode/stash/apis/stash/v1alpha2.RecoveryStatus":      schema_stash_apis_stash_v1alpha2_RecoveryStatus(ref),
 		"github.com/appscode/stash/apis/stash/v1alpha2.RecoveryTarget":      schema_stash_apis_stash_v1alpha2_RecoveryTarget(ref),
+		"github.com/appscode/stash/apis/stash/v1alpha2.RepoRef":             schema_stash_apis_stash_v1alpha2_RepoRef(ref),
 		"github.com/appscode/stash/apis/stash/v1alpha2.Repository":          schema_stash_apis_stash_v1alpha2_Repository(ref),
 		"github.com/appscode/stash/apis/stash/v1alpha2.RepositoryList":      schema_stash_apis_stash_v1alpha2_RepositoryList(ref),
 		"github.com/appscode/stash/apis/stash/v1alpha2.RepositorySpec":      schema_stash_apis_stash_v1alpha2_RepositorySpec(ref),
@@ -1161,7 +1162,7 @@ func schema_stash_apis_stash_v1alpha2_RecoverySpec(ref common.ReferenceCallback)
 					"repository": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Repository refer to the Repository crd that hold backend information",
-							Ref:         ref("k8s.io/api/core/v1.ObjectReference"),
+							Ref:         ref("github.com/appscode/stash/apis/stash/v1alpha2.RepoRef"),
 						},
 					},
 					"snapshot": {
@@ -1215,7 +1216,7 @@ func schema_stash_apis_stash_v1alpha2_RecoverySpec(ref common.ReferenceCallback)
 			},
 		},
 		Dependencies: []string{
-			"github.com/appscode/stash/apis/stash/v1alpha2.ContainerAttributes", "github.com/appscode/stash/apis/stash/v1alpha2.PodAttributes", "github.com/appscode/stash/apis/stash/v1alpha2.RecoveryTarget", "k8s.io/api/core/v1.ObjectReference"},
+			"github.com/appscode/stash/apis/stash/v1alpha2.ContainerAttributes", "github.com/appscode/stash/apis/stash/v1alpha2.PodAttributes", "github.com/appscode/stash/apis/stash/v1alpha2.RecoveryTarget", "github.com/appscode/stash/apis/stash/v1alpha2.RepoRef"},
 	}
 }
 
@@ -1278,6 +1279,31 @@ func schema_stash_apis_stash_v1alpha2_RecoveryTarget(ref common.ReferenceCallbac
 		},
 		Dependencies: []string{
 			"github.com/appscode/stash/apis/stash/v1alpha2.WorkloadRef", "kmodules.xyz/objectstore-api/api/v1.LocalSpec"},
+	}
+}
+
+func schema_stash_apis_stash_v1alpha2_RepoRef(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Properties: map[string]spec.Schema{
+					"name": {
+						SchemaProps: spec.SchemaProps{
+							Type:   []string{"string"},
+							Format: "",
+						},
+					},
+					"namespace": {
+						SchemaProps: spec.SchemaProps{
+							Type:   []string{"string"},
+							Format: "",
+						},
+					},
+				},
+				Required: []string{"name", "namespace"},
+			},
+		},
+		Dependencies: []string{},
 	}
 }
 
