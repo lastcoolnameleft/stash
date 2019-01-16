@@ -1,0 +1,9 @@
+apiVersion: stash.appscode.com/v1alpha2
+kind: BackupTrigger
+metadata:
+  name: backup-volume-demo-trigger
+  namespace: demo
+spec:
+  # targetBackup indicates the backup crd that we want to trigger to take instant backup
+  targetBackup:
+    name: backup-volume-demo

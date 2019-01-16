@@ -1,0 +1,41 @@
+apiVersion: stash.appscode.com/v1alpha2
+kind: Backup
+metadata:
+  name: backup-database-demo
+  namespace: demo
+spec:
+  schedule: '@every 1h'
+  # backupAgent indicates AgentTemplate crd to use for backup the target database.
+  backupAgent:
+    name: pgBackup
+  # repository refers to the Repository crd that hold backend information
+  repository:
+    name: stash-backup-repo
+  # targetRef indicates the respective AppBinding crd for target database
+  targetRef:
+    apiVersion: appcatalog.appscode.com/v1alpha1
+    kind: AppBinding
+    name: quick-postgres
+  # retentionPolicies specify the policy to follow to clean old backup snapshots
+  retentionPolicy:
+    keepLast: 5
+    prune: true
+  # containerAttributes is an optional field that can be use to set some attributes
+  # such as resources, securityContext etc. to backup sidecar container
+  containerAttributes:
+    # these arguments will be passed to the backup command.
+    # you can use it to backup specific database. by default stash will backup all databases
+    args:
+      - mydb
+      - anotherdb
+    resources:
+      requests:
+        memory: "64Mi"
+        cpu: "250m"
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+  # podAttributes is an optional field that can be used to set some attributes such as nodeSelector, affinity, toleration etc. for the backup job
+  podAttributes:
+    nodeSelector:
+      cloud.google.com/gke-nodepool: pool-highcpu32

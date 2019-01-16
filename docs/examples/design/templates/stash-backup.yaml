@@ -1,0 +1,14 @@
+apiVersion: stash.appscode.com/v1alpha2
+kind: AgentTemplate
+metadata:
+  name: stashVolumeBackup
+spec:
+  containers:
+  - image: appscode/stash:0.8.2
+    name:  stash-backup
+    args:
+    - backup
+    - --backup-name=$(BACKUP_NAME)
+    - --pushgateway-url=$(PUSH_GATEWAY_URL)
+    - --enable-status-subresource=$(ENABLE_STATUS_SUB_RESOURCE)
+    - --enable-analytics=$(ENABLE_ANALYSTICS)
