@@ -134,6 +134,8 @@ type PodAttributes struct {
 }
 
 type ContainerAttributes struct {
+	// Arguments pass to backup command
+	Args []string `json:"args,omitempty"`
 	// Compute Resources required by this container.
 	// Cannot be updated.
 	// More info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/

@@ -339,6 +339,11 @@ spec:
                   type: string
             containerAttributes:
               properties:
+                args:
+                  description: Arguments pass to backup command
+                  items:
+                    type: string
+                  type: array
                 lifecycle:
                   description: Lifecycle describes actions that the management system
                     should take in response to container lifecycle events. For the
