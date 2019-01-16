@@ -28,6 +28,12 @@ type BackupTemplateSpec struct {
 	Schedule        string                    `json:"schedule,omitempty"`
 	BackupAgent     core.LocalObjectReference `json:"backupAgent,omitempty"`
 	RetentionPolicy `json:"retentionPolicy,omitempty"`
+	// ContainerAttributes allow to specify Resources, SecurityContext, ReadinessProbe etc. for backup sidecar or job's container
+	//+optional
+	*ContainerAttributes `json:"containerAttributes,omitempty"`
+	// PodAttributes allow to specify NodeSelector, Affinity, Toleration etc. for backup job's pod
+	//+optional
+	*PodAttributes `json:"podAttributes,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object

@@ -733,11 +733,23 @@ func schema_stash_apis_stash_v1alpha2_BackupTemplateSpec(ref common.ReferenceCal
 							Ref: ref("github.com/appscode/stash/apis/stash/v1alpha2.RetentionPolicy"),
 						},
 					},
+					"containerAttributes": {
+						SchemaProps: spec.SchemaProps{
+							Description: "ContainerAttributes allow to specify Resources, SecurityContext, ReadinessProbe etc. for backup sidecar or job's container",
+							Ref:         ref("github.com/appscode/stash/apis/stash/v1alpha2.ContainerAttributes"),
+						},
+					},
+					"podAttributes": {
+						SchemaProps: spec.SchemaProps{
+							Description: "PodAttributes allow to specify NodeSelector, Affinity, Toleration etc. for backup job's pod",
+							Ref:         ref("github.com/appscode/stash/apis/stash/v1alpha2.PodAttributes"),
+						},
+					},
 				},
 			},
 		},
 		Dependencies: []string{
-			"github.com/appscode/stash/apis/stash/v1alpha2.RetentionPolicy", "k8s.io/api/core/v1.LocalObjectReference", "kmodules.xyz/objectstore-api/api/v1.Backend"},
+			"github.com/appscode/stash/apis/stash/v1alpha2.ContainerAttributes", "github.com/appscode/stash/apis/stash/v1alpha2.PodAttributes", "github.com/appscode/stash/apis/stash/v1alpha2.RetentionPolicy", "k8s.io/api/core/v1.LocalObjectReference", "kmodules.xyz/objectstore-api/api/v1.Backend"},
 	}
 }
 

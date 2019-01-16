@@ -284,6 +284,16 @@ func (in *BackupTemplateSpec) DeepCopyInto(out *BackupTemplateSpec) {
 	in.RepositorySpec.DeepCopyInto(&out.RepositorySpec)
 	out.BackupAgent = in.BackupAgent
 	in.RetentionPolicy.DeepCopyInto(&out.RetentionPolicy)
+	if in.ContainerAttributes != nil {
+		in, out := &in.ContainerAttributes, &out.ContainerAttributes
+		*out = new(ContainerAttributes)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.PodAttributes != nil {
+		in, out := &in.PodAttributes, &out.PodAttributes
+		*out = new(PodAttributes)
+		(*in).DeepCopyInto(*out)
+	}
 	return
 }
 
