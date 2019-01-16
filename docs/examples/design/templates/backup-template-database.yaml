@@ -1,0 +1,16 @@
+apiVersion: stash.appscode.com/v1alpha2
+kind: BackupTemplate
+metadata:
+  name: database-backup-template
+spec:
+  backend:
+    gcs:
+      bucket: stash-backup-repo
+      prefix: ${metadata.namespace}/${metadata.name} # this prefix template will be used to initialize repository in different directory in backend.
+    storageSecretName: gcs-secret
+  schedule: '@every 1h'
+  backupAgent: pgBackup
+  retentionPolicy:
+    name: 'keep-last-5'
+    keepLast: 5
+    prune: true

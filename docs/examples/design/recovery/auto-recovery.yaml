@@ -16,3 +16,7 @@ spec:
       apiVersion: apps/v1
       kind: Deployment
       name: stash-demo
+  # recoveryPolicy specifies weather to recover only once or recover always when workload restart for a particular Recovery crd.
+  # It can be either "IfNotRecovered" or "Always"
+  # If "Always" is used, whenever the target workload restart, it will recover first.
+  recoveryPolicy: Always
