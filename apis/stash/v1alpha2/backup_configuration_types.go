@@ -3,6 +3,7 @@ package v1alpha2
 import (
 	core "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	store "kmodules.xyz/objectstore-api/api/v1"
 )
 
 const (
@@ -81,6 +82,15 @@ type RetentionPolicy struct {
 }
 
 type TargetRef struct {
+	// Volume specifies the target volume to backup
+	//+optional
+	Volume *store.LocalSpec `json:"volume,omitempty"`
+	// WorkloadRef refers to the workload to backup
+	// +optional
+	Workload *WorkloadRef `json:"workload,omitempty"`
+}
+
+type WorkloadRef struct {
 	APIVersion string `json:"apiVersion,omitempty"`
 	Kind       string `json:"kind,omitempty"`
 	Name       string `json:"name,omitempty"`

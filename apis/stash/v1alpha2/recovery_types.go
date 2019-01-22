@@ -3,7 +3,6 @@ package v1alpha2
 import (
 	"github.com/appscode/go/encoding/json/types"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	store "kmodules.xyz/objectstore-api/api/v1"
 )
 
 const (
@@ -32,7 +31,7 @@ type RecoverySpec struct {
 	// Paths can be used to recover only specified directories from the backed up snapshot
 	Paths []string `json:"paths,omitempty"`
 	// RecoverTo indicates the target where the recovered data will be stored
-	RecoverTo RecoveryTarget `json:"recoverTo,omitempty"`
+	RecoverTo TargetRef `json:"recoverTo,omitempty"`
 	// RecoveryPolicy specifies weather to recover only once or recover always when workload restart for a particular Recovery crd.
 	// +optional
 	RecoveryPolicy `json:"recoveryPolicy,omitempty"`
@@ -47,15 +46,6 @@ type RecoverySpec struct {
 type RepoRef struct {
 	Name      string `json:"name"`
 	Namespace string `json:"namespace"`
-}
-
-type RecoveryTarget struct {
-	// Volume specifies the volume when the recovery target is a volume
-	//+optional
-	Volume *store.LocalSpec `json:"volume,omitempty"`
-	// ObjectRef refers to the workload when the recovery target is a running workload
-	// +optional
-	Workload *TargetRef `json:"workload,omitempty"`
 }
 
 type RecoveryPolicy string

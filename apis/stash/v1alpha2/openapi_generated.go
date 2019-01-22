@@ -59,7 +59,6 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"github.com/appscode/stash/apis/stash/v1alpha2.RecoveryList":                   schema_stash_apis_stash_v1alpha2_RecoveryList(ref),
 		"github.com/appscode/stash/apis/stash/v1alpha2.RecoverySpec":                   schema_stash_apis_stash_v1alpha2_RecoverySpec(ref),
 		"github.com/appscode/stash/apis/stash/v1alpha2.RecoveryStatus":                 schema_stash_apis_stash_v1alpha2_RecoveryStatus(ref),
-		"github.com/appscode/stash/apis/stash/v1alpha2.RecoveryTarget":                 schema_stash_apis_stash_v1alpha2_RecoveryTarget(ref),
 		"github.com/appscode/stash/apis/stash/v1alpha2.RepoRef":                        schema_stash_apis_stash_v1alpha2_RepoRef(ref),
 		"github.com/appscode/stash/apis/stash/v1alpha2.Repository":                     schema_stash_apis_stash_v1alpha2_Repository(ref),
 		"github.com/appscode/stash/apis/stash/v1alpha2.RepositoryList":                 schema_stash_apis_stash_v1alpha2_RepositoryList(ref),
@@ -69,6 +68,7 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"github.com/appscode/stash/apis/stash/v1alpha2.RetentionPolicy":                schema_stash_apis_stash_v1alpha2_RetentionPolicy(ref),
 		"github.com/appscode/stash/apis/stash/v1alpha2.Steps":                          schema_stash_apis_stash_v1alpha2_Steps(ref),
 		"github.com/appscode/stash/apis/stash/v1alpha2.TargetRef":                      schema_stash_apis_stash_v1alpha2_TargetRef(ref),
+		"github.com/appscode/stash/apis/stash/v1alpha2.WorkloadRef":                    schema_stash_apis_stash_v1alpha2_WorkloadRef(ref),
 		"k8s.io/api/core/v1.AWSElasticBlockStoreVolumeSource":                          schema_k8sio_api_core_v1_AWSElasticBlockStoreVolumeSource(ref),
 		"k8s.io/api/core/v1.Affinity":                                                  schema_k8sio_api_core_v1_Affinity(ref),
 		"k8s.io/api/core/v1.AttachedVolume":                                            schema_k8sio_api_core_v1_AttachedVolume(ref),
@@ -1321,7 +1321,7 @@ func schema_stash_apis_stash_v1alpha2_RecoverySpec(ref common.ReferenceCallback)
 					"recoverTo": {
 						SchemaProps: spec.SchemaProps{
 							Description: "RecoverTo indicates the target where the recovered data will be stored",
-							Ref:         ref("github.com/appscode/stash/apis/stash/v1alpha2.RecoveryTarget"),
+							Ref:         ref("github.com/appscode/stash/apis/stash/v1alpha2.TargetRef"),
 						},
 					},
 					"recoveryPolicy": {
@@ -1348,7 +1348,7 @@ func schema_stash_apis_stash_v1alpha2_RecoverySpec(ref common.ReferenceCallback)
 			},
 		},
 		Dependencies: []string{
-			"github.com/appscode/stash/apis/stash/v1alpha2.ContainerAttributes", "github.com/appscode/stash/apis/stash/v1alpha2.PodAttributes", "github.com/appscode/stash/apis/stash/v1alpha2.RecoveryTarget", "github.com/appscode/stash/apis/stash/v1alpha2.RepoRef"},
+			"github.com/appscode/stash/apis/stash/v1alpha2.ContainerAttributes", "github.com/appscode/stash/apis/stash/v1alpha2.PodAttributes", "github.com/appscode/stash/apis/stash/v1alpha2.RepoRef", "github.com/appscode/stash/apis/stash/v1alpha2.TargetRef"},
 	}
 }
 
@@ -1386,31 +1386,6 @@ func schema_stash_apis_stash_v1alpha2_RecoveryStatus(ref common.ReferenceCallbac
 		},
 		Dependencies: []string{
 			"github.com/appscode/go/encoding/json/types.IntHash", "github.com/appscode/stash/apis/stash/v1alpha2.RestoreStats"},
-	}
-}
-
-func schema_stash_apis_stash_v1alpha2_RecoveryTarget(ref common.ReferenceCallback) common.OpenAPIDefinition {
-	return common.OpenAPIDefinition{
-		Schema: spec.Schema{
-			SchemaProps: spec.SchemaProps{
-				Properties: map[string]spec.Schema{
-					"volume": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Volume specifies the volume when the recovery target is a volume",
-							Ref:         ref("kmodules.xyz/objectstore-api/api/v1.LocalSpec"),
-						},
-					},
-					"workload": {
-						SchemaProps: spec.SchemaProps{
-							Description: "ObjectRef refers to the workload when the recovery target is a running workload",
-							Ref:         ref("github.com/appscode/stash/apis/stash/v1alpha2.TargetRef"),
-						},
-					},
-				},
-			},
-		},
-		Dependencies: []string{
-			"github.com/appscode/stash/apis/stash/v1alpha2.TargetRef", "kmodules.xyz/objectstore-api/api/v1.LocalSpec"},
 	}
 }
 
@@ -1745,6 +1720,31 @@ func schema_stash_apis_stash_v1alpha2_Steps(ref common.ReferenceCallback) common
 }
 
 func schema_stash_apis_stash_v1alpha2_TargetRef(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Properties: map[string]spec.Schema{
+					"volume": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Volume specifies the target volume to backup",
+							Ref:         ref("kmodules.xyz/objectstore-api/api/v1.LocalSpec"),
+						},
+					},
+					"workload": {
+						SchemaProps: spec.SchemaProps{
+							Description: "WorkloadRef refers to the workload to backup",
+							Ref:         ref("github.com/appscode/stash/apis/stash/v1alpha2.WorkloadRef"),
+						},
+					},
+				},
+			},
+		},
+		Dependencies: []string{
+			"github.com/appscode/stash/apis/stash/v1alpha2.WorkloadRef", "kmodules.xyz/objectstore-api/api/v1.LocalSpec"},
+	}
+}
+
+func schema_stash_apis_stash_v1alpha2_WorkloadRef(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
