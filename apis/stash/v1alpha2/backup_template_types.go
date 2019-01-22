@@ -1,7 +1,6 @@
 package v1alpha2
 
 import (
-	core "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -23,17 +22,15 @@ type BackupTemplate struct {
 }
 
 type BackupTemplateSpec struct {
-	// RepositorySpec is used to create Repository crd for respective workload
-	RepositorySpec  `json:",inline"`
-	Schedule        string                    `json:"schedule,omitempty"`
-	BackupAgent     core.LocalObjectReference `json:"backupAgent,omitempty"`
-	RetentionPolicy `json:"retentionPolicy,omitempty"`
-	// ContainerAttributes allow to specify Resources, SecurityContext, ReadinessProbe etc. for backup sidecar or job's container
-	//+optional
-	*ContainerAttributes `json:"containerAttributes,omitempty"`
-	// PodAttributes allow to specify NodeSelector, Affinity, Toleration etc. for backup job's pod
-	//+optional
-	*PodAttributes `json:"podAttributes,omitempty"`
+	Actions []Steps `json:"actions,omitempty"`
+}
+
+type Steps struct {
+	// Name indicates the name of Action crd
+	Name string `json:"name,omitempty"`
+	// Inputs specifies the inputs of respective Action
+	// +optional
+	Inputs map[string]string `json:"inputs,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object

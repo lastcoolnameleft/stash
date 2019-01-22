@@ -5,11 +5,11 @@ metadata:
   creationTimestamp: null
   labels:
     app: stash
-  name: backupTriggers.stash.appscode.com
+  name: backupInstances.stash.appscode.com
 spec:
   additionalPrinterColumns:
-  - JSONPath: .spec.targetBackup.name
-    name: TargetBackup
+  - JSONPath: .spec.targetBackupConfiguration
+    name: TargetBackupConfiguration
     type: string
   - JSONPath: .status.phase
     name: Phase
@@ -20,13 +20,14 @@ spec:
   group: stash.appscode.com
   names:
     categories:
-    - trigger
+    - instance
+    - backup
     - appscode
-    kind: Backup
-    plural: backupTriggers
+    kind: BackupInstance
+    plural: backupInstances
     shortNames:
-    - btgr
-    singular: backupTrigger
+    - inst
+    singular: backupInstance
   scope: Namespaced
   subresources:
     status: {}
@@ -323,15 +324,12 @@ spec:
               type: string
         spec:
           properties:
-            targetBackup:
-              description: LocalObjectReference contains enough information to let
-                you locate the referenced object inside the same namespace.
-              properties:
-                name:
-                  description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
-                  type: string
+            targetBackupConfiguration:
+              description: TargetBackupConfiguration indicates the respective BackupConfiguration
+                crd for target backup
+              type: string
           required:
-          - targetBackup
+          - targetBackupConfiguration
         status:
           properties:
             observedGeneration:
@@ -344,9 +342,24 @@ spec:
             stats:
               items:
                 properties:
-                  host:
+                  duration:
                     type: string
-                  phase:
+                  fileStats:
+                    properties:
+                      changed:
+                        format: int32
+                        type: integer
+                      new:
+                        format: int32
+                        type: integer
+                      unmodified:
+                        format: int32
+                        type: integer
+                  size:
+                    type: string
+                  snapshot:
+                    type: string
+                  uploaded:
                     type: string
               type: array
   version: v1alpha2

@@ -18,29 +18,33 @@ limitations under the License.
 
 package v1alpha2
 
-// AgentTemplateListerExpansion allows custom methods to be added to
-// AgentTemplateLister.
-type AgentTemplateListerExpansion interface{}
+// ActionListerExpansion allows custom methods to be added to
+// ActionLister.
+type ActionListerExpansion interface{}
 
-// BackupListerExpansion allows custom methods to be added to
-// BackupLister.
-type BackupListerExpansion interface{}
+// BackupConfigurationListerExpansion allows custom methods to be added to
+// BackupConfigurationLister.
+type BackupConfigurationListerExpansion interface{}
 
-// BackupNamespaceListerExpansion allows custom methods to be added to
-// BackupNamespaceLister.
-type BackupNamespaceListerExpansion interface{}
+// BackupConfigurationNamespaceListerExpansion allows custom methods to be added to
+// BackupConfigurationNamespaceLister.
+type BackupConfigurationNamespaceListerExpansion interface{}
+
+// BackupInstanceListerExpansion allows custom methods to be added to
+// BackupInstanceLister.
+type BackupInstanceListerExpansion interface{}
+
+// BackupInstanceNamespaceListerExpansion allows custom methods to be added to
+// BackupInstanceNamespaceLister.
+type BackupInstanceNamespaceListerExpansion interface{}
 
 // BackupTemplateListerExpansion allows custom methods to be added to
 // BackupTemplateLister.
 type BackupTemplateListerExpansion interface{}
 
-// BackupTriggerListerExpansion allows custom methods to be added to
-// BackupTriggerLister.
-type BackupTriggerListerExpansion interface{}
-
-// BackupTriggerNamespaceListerExpansion allows custom methods to be added to
-// BackupTriggerNamespaceLister.
-type BackupTriggerNamespaceListerExpansion interface{}
+// DefaultBackupConfigurationListerExpansion allows custom methods to be added to
+// DefaultBackupConfigurationLister.
+type DefaultBackupConfigurationListerExpansion interface{}
 
 // RecoveryListerExpansion allows custom methods to be added to
 // RecoveryLister.

@@ -62,14 +62,16 @@ func (f *sharedInformerFactory) ForResource(resource schema.GroupVersionResource
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Stash().V1alpha1().Restics().Informer()}, nil
 
 		// Group=stash.appscode.com, Version=v1alpha2
-	case v1alpha2.SchemeGroupVersion.WithResource("agenttemplates"):
-		return &genericInformer{resource: resource.GroupResource(), informer: f.Stash().V1alpha2().AgentTemplates().Informer()}, nil
-	case v1alpha2.SchemeGroupVersion.WithResource("backups"):
-		return &genericInformer{resource: resource.GroupResource(), informer: f.Stash().V1alpha2().Backups().Informer()}, nil
+	case v1alpha2.SchemeGroupVersion.WithResource("actions"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Stash().V1alpha2().Actions().Informer()}, nil
+	case v1alpha2.SchemeGroupVersion.WithResource("backupconfigurations"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Stash().V1alpha2().BackupConfigurations().Informer()}, nil
+	case v1alpha2.SchemeGroupVersion.WithResource("backupinstances"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Stash().V1alpha2().BackupInstances().Informer()}, nil
 	case v1alpha2.SchemeGroupVersion.WithResource("backuptemplates"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Stash().V1alpha2().BackupTemplates().Informer()}, nil
-	case v1alpha2.SchemeGroupVersion.WithResource("backuptriggers"):
-		return &genericInformer{resource: resource.GroupResource(), informer: f.Stash().V1alpha2().BackupTriggers().Informer()}, nil
+	case v1alpha2.SchemeGroupVersion.WithResource("defaultbackupconfigurations"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Stash().V1alpha2().DefaultBackupConfigurations().Informer()}, nil
 	case v1alpha2.SchemeGroupVersion.WithResource("recoveries"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Stash().V1alpha2().Recoveries().Informer()}, nil
 	case v1alpha2.SchemeGroupVersion.WithResource("repositories"):

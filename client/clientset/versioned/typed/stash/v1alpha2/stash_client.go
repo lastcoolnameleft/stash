@@ -27,10 +27,11 @@ import (
 
 type StashV1alpha2Interface interface {
 	RESTClient() rest.Interface
-	AgentTemplatesGetter
-	BackupsGetter
+	ActionsGetter
+	BackupConfigurationsGetter
+	BackupInstancesGetter
 	BackupTemplatesGetter
-	BackupTriggersGetter
+	DefaultBackupConfigurationsGetter
 	RecoveriesGetter
 	RepositoriesGetter
 }
@@ -40,20 +41,24 @@ type StashV1alpha2Client struct {
 	restClient rest.Interface
 }
 
-func (c *StashV1alpha2Client) AgentTemplates() AgentTemplateInterface {
-	return newAgentTemplates(c)
+func (c *StashV1alpha2Client) Actions() ActionInterface {
+	return newActions(c)
 }
 
-func (c *StashV1alpha2Client) Backups(namespace string) BackupInterface {
-	return newBackups(c, namespace)
+func (c *StashV1alpha2Client) BackupConfigurations(namespace string) BackupConfigurationInterface {
+	return newBackupConfigurations(c, namespace)
+}
+
+func (c *StashV1alpha2Client) BackupInstances(namespace string) BackupInstanceInterface {
+	return newBackupInstances(c, namespace)
 }
 
 func (c *StashV1alpha2Client) BackupTemplates() BackupTemplateInterface {
 	return newBackupTemplates(c)
 }
 
-func (c *StashV1alpha2Client) BackupTriggers(namespace string) BackupTriggerInterface {
-	return newBackupTriggers(c, namespace)
+func (c *StashV1alpha2Client) DefaultBackupConfigurations() DefaultBackupConfigurationInterface {
+	return newDefaultBackupConfigurations(c)
 }
 
 func (c *StashV1alpha2Client) Recoveries(namespace string) RecoveryInterface {

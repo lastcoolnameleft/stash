@@ -31,59 +31,59 @@ import (
 	cache "k8s.io/client-go/tools/cache"
 )
 
-// BackupTriggerInformer provides access to a shared informer and lister for
-// BackupTriggers.
-type BackupTriggerInformer interface {
+// BackupInstanceInformer provides access to a shared informer and lister for
+// BackupInstances.
+type BackupInstanceInformer interface {
 	Informer() cache.SharedIndexInformer
-	Lister() v1alpha2.BackupTriggerLister
+	Lister() v1alpha2.BackupInstanceLister
 }
 
-type backupTriggerInformer struct {
+type backupInstanceInformer struct {
 	factory          internalinterfaces.SharedInformerFactory
 	tweakListOptions internalinterfaces.TweakListOptionsFunc
 	namespace        string
 }
 
-// NewBackupTriggerInformer constructs a new informer for BackupTrigger type.
+// NewBackupInstanceInformer constructs a new informer for BackupInstance type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewBackupTriggerInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
-	return NewFilteredBackupTriggerInformer(client, namespace, resyncPeriod, indexers, nil)
+func NewBackupInstanceInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
+	return NewFilteredBackupInstanceInformer(client, namespace, resyncPeriod, indexers, nil)
 }
 
-// NewFilteredBackupTriggerInformer constructs a new informer for BackupTrigger type.
+// NewFilteredBackupInstanceInformer constructs a new informer for BackupInstance type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewFilteredBackupTriggerInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
+func NewFilteredBackupInstanceInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
 	return cache.NewSharedIndexInformer(
 		&cache.ListWatch{
 			ListFunc: func(options v1.ListOptions) (runtime.Object, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.StashV1alpha2().BackupTriggers(namespace).List(options)
+				return client.StashV1alpha2().BackupInstances(namespace).List(options)
 			},
 			WatchFunc: func(options v1.ListOptions) (watch.Interface, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.StashV1alpha2().BackupTriggers(namespace).Watch(options)
+				return client.StashV1alpha2().BackupInstances(namespace).Watch(options)
 			},
 		},
-		&stashv1alpha2.BackupTrigger{},
+		&stashv1alpha2.BackupInstance{},
 		resyncPeriod,
 		indexers,
 	)
 }
 
-func (f *backupTriggerInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
-	return NewFilteredBackupTriggerInformer(client, f.namespace, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
+func (f *backupInstanceInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
+	return NewFilteredBackupInstanceInformer(client, f.namespace, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
 }
 
-func (f *backupTriggerInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&stashv1alpha2.BackupTrigger{}, f.defaultInformer)
+func (f *backupInstanceInformer) Informer() cache.SharedIndexInformer {
+	return f.factory.InformerFor(&stashv1alpha2.BackupInstance{}, f.defaultInformer)
 }
 
-func (f *backupTriggerInformer) Lister() v1alpha2.BackupTriggerLister {
-	return v1alpha2.NewBackupTriggerLister(f.Informer().GetIndexer())
+func (f *backupInstanceInformer) Lister() v1alpha2.BackupInstanceLister {
+	return v1alpha2.NewBackupInstanceLister(f.Informer().GetIndexer())
 }

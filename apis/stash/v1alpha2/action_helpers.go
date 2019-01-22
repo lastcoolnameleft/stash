@@ -6,14 +6,14 @@ import (
 	apiextensions "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1beta1"
 )
 
-func (agent AgentTemplate) CustomResourceDefinition() *apiextensions.CustomResourceDefinition {
+func (action Action) CustomResourceDefinition() *apiextensions.CustomResourceDefinition {
 	return crdutils.NewCustomResourceDefinition(crdutils.Config{
 		Group:         SchemeGroupVersion.Group,
-		Plural:        ResourcePluralAgentTemplate,
-		Singular:      ResourceSingularAgentTemplate,
-		Kind:          ResourceKindBackup,
-		ShortNames:    []string{"agent"},
-		Categories:    []string{"template", "appscode"},
+		Plural:        ResourcePluralAction,
+		Singular:      ResourceSingularAction,
+		Kind:          ResourceKindAction,
+		ShortNames:    []string{"act"},
+		Categories:    []string{"template", "appscode", "kube-ci"},
 		ResourceScope: string(apiextensions.ClusterScoped),
 		Versions: []apiextensions.CustomResourceDefinitionVersion{
 			{
@@ -25,7 +25,7 @@ func (agent AgentTemplate) CustomResourceDefinition() *apiextensions.CustomResou
 		Labels: crdutils.Labels{
 			LabelsMap: map[string]string{"app": "stash"},
 		},
-		SpecDefinitionName:      "github.com/appscode/stash/apis/stash/v1alpha2.AgentTemplate",
+		SpecDefinitionName:      "github.com/appscode/stash/apis/stash/v1alpha2.Action",
 		EnableValidation:        true,
 		GetOpenAPIDefinitions:   GetOpenAPIDefinitions,
 		EnableStatusSubresource: apis.EnableStatusSubresource,

@@ -24,14 +24,16 @@ import (
 
 // Interface provides access to all the informers in this group version.
 type Interface interface {
-	// AgentTemplates returns a AgentTemplateInformer.
-	AgentTemplates() AgentTemplateInformer
-	// Backups returns a BackupInformer.
-	Backups() BackupInformer
+	// Actions returns a ActionInformer.
+	Actions() ActionInformer
+	// BackupConfigurations returns a BackupConfigurationInformer.
+	BackupConfigurations() BackupConfigurationInformer
+	// BackupInstances returns a BackupInstanceInformer.
+	BackupInstances() BackupInstanceInformer
 	// BackupTemplates returns a BackupTemplateInformer.
 	BackupTemplates() BackupTemplateInformer
-	// BackupTriggers returns a BackupTriggerInformer.
-	BackupTriggers() BackupTriggerInformer
+	// DefaultBackupConfigurations returns a DefaultBackupConfigurationInformer.
+	DefaultBackupConfigurations() DefaultBackupConfigurationInformer
 	// Recoveries returns a RecoveryInformer.
 	Recoveries() RecoveryInformer
 	// Repositories returns a RepositoryInformer.
@@ -49,14 +51,19 @@ func New(f internalinterfaces.SharedInformerFactory, namespace string, tweakList
 	return &version{factory: f, namespace: namespace, tweakListOptions: tweakListOptions}
 }
 
-// AgentTemplates returns a AgentTemplateInformer.
-func (v *version) AgentTemplates() AgentTemplateInformer {
-	return &agentTemplateInformer{factory: v.factory, tweakListOptions: v.tweakListOptions}
+// Actions returns a ActionInformer.
+func (v *version) Actions() ActionInformer {
+	return &actionInformer{factory: v.factory, tweakListOptions: v.tweakListOptions}
 }
 
-// Backups returns a BackupInformer.
-func (v *version) Backups() BackupInformer {
-	return &backupInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+// BackupConfigurations returns a BackupConfigurationInformer.
+func (v *version) BackupConfigurations() BackupConfigurationInformer {
+	return &backupConfigurationInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+}
+
+// BackupInstances returns a BackupInstanceInformer.
+func (v *version) BackupInstances() BackupInstanceInformer {
+	return &backupInstanceInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }
 
 // BackupTemplates returns a BackupTemplateInformer.
@@ -64,9 +71,9 @@ func (v *version) BackupTemplates() BackupTemplateInformer {
 	return &backupTemplateInformer{factory: v.factory, tweakListOptions: v.tweakListOptions}
 }
 
-// BackupTriggers returns a BackupTriggerInformer.
-func (v *version) BackupTriggers() BackupTriggerInformer {
-	return &backupTriggerInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+// DefaultBackupConfigurations returns a DefaultBackupConfigurationInformer.
+func (v *version) DefaultBackupConfigurations() DefaultBackupConfigurationInformer {
+	return &defaultBackupConfigurationInformer{factory: v.factory, tweakListOptions: v.tweakListOptions}
 }
 
 // Recoveries returns a RecoveryInformer.

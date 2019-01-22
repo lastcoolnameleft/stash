@@ -45,12 +45,13 @@ func generateCRDDefinitions() {
 
 	// generate "v1alpha2" crds
 	v1alpha2CRDs := []*crd_api.CustomResourceDefinition{
-		stashv1alpha2.Backup{}.CustomResourceDefinition(),
+		stashv1alpha2.Action{}.CustomResourceDefinition(),
+		stashv1alpha2.BackupConfiguration{}.CustomResourceDefinition(),
+		stashv1alpha2.BackupInstance{}.CustomResourceDefinition(),
+		stashv1alpha2.BackupTemplate{}.CustomResourceDefinition(),
+		stashv1alpha2.DefaultBackupConfiguration{}.CustomResourceDefinition(),
 		stashv1alpha2.Recovery{}.CustomResourceDefinition(),
 		stashv1alpha2.Repository{}.CustomResourceDefinition(),
-		stashv1alpha2.BackupTemplate{}.CustomResourceDefinition(),
-		stashv1alpha2.AgentTemplate{}.CustomResourceDefinition(),
-		stashv1alpha2.BackupTrigger{}.CustomResourceDefinition(),
 	}
 	genCRD(stashv1alpha2.SchemeGroupVersion.Version, v1alpha2CRDs)
 
@@ -111,12 +112,13 @@ func generateSwaggerJson() {
 			{stashv1alpha1.SchemeGroupVersion, stashv1alpha1.ResourcePluralRecovery, stashv1alpha1.ResourceKindRecovery, true},
 
 			// v1alpha2 resources
-			{stashv1alpha2.SchemeGroupVersion, stashv1alpha2.ResourcePluralBackup, stashv1alpha2.ResourceKindBackup, true},
-			{stashv1alpha2.SchemeGroupVersion, stashv1alpha2.ResourcePluralRepository, stashv1alpha2.ResourceKindRepository, true},
-			{stashv1alpha2.SchemeGroupVersion, stashv1alpha2.ResourcePluralRecovery, stashv1alpha2.ResourceKindRecovery, true},
+			{stashv1alpha2.SchemeGroupVersion, stashv1alpha2.ResourcePluralAction, stashv1alpha2.ResourceKindAction, false},
+			{stashv1alpha2.SchemeGroupVersion, stashv1alpha2.ResourcePluralBackupConfiguration, stashv1alpha2.ResourceKindBackupConfiguration, true},
+			{stashv1alpha2.SchemeGroupVersion, stashv1alpha2.ResourcePluralBackupInstance, stashv1alpha2.ResourceKindBackupInstance, true},
 			{stashv1alpha2.SchemeGroupVersion, stashv1alpha2.ResourcePluralBackupTemplate, stashv1alpha2.ResourceKindBackupTemplate, false},
-			{stashv1alpha2.SchemeGroupVersion, stashv1alpha2.ResourcePluralAgentTemplate, stashv1alpha2.ResourceKindAgentTemplate, false},
-			{stashv1alpha2.SchemeGroupVersion, stashv1alpha2.ResourcePluralBackupTrigger, stashv1alpha2.ResourceKindBackupTrigger, true},
+			{stashv1alpha2.SchemeGroupVersion, stashv1alpha2.ResourcePluralDefaultBackupConfiguration, stashv1alpha2.ResourceKindDefaultBackupConfiguration, false},
+			{stashv1alpha2.SchemeGroupVersion, stashv1alpha2.ResourcePluralRecovery, stashv1alpha2.ResourceKindRecovery, true},
+			{stashv1alpha2.SchemeGroupVersion, stashv1alpha2.ResourcePluralRepository, stashv1alpha2.ResourceKindRepository, true},
 		},
 		RDResources: []openapi.TypeInfo{
 			{repov1alpha1.SchemeGroupVersion, repov1alpha1.ResourcePluralSnapshot, repov1alpha1.ResourceKindSnapshot, true},

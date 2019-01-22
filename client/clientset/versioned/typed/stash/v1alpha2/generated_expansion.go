@@ -18,13 +18,15 @@ limitations under the License.
 
 package v1alpha2
 
-type AgentTemplateExpansion interface{}
+type ActionExpansion interface{}
 
-type BackupExpansion interface{}
+type BackupConfigurationExpansion interface{}
+
+type BackupInstanceExpansion interface{}
 
 type BackupTemplateExpansion interface{}
 
-type BackupTriggerExpansion interface{}
+type DefaultBackupConfigurationExpansion interface{}
 
 type RecoveryExpansion interface{}
 

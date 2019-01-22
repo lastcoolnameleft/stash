@@ -31,59 +31,59 @@ import (
 	cache "k8s.io/client-go/tools/cache"
 )
 
-// BackupInformer provides access to a shared informer and lister for
-// Backups.
-type BackupInformer interface {
+// BackupConfigurationInformer provides access to a shared informer and lister for
+// BackupConfigurations.
+type BackupConfigurationInformer interface {
 	Informer() cache.SharedIndexInformer
-	Lister() v1alpha2.BackupLister
+	Lister() v1alpha2.BackupConfigurationLister
 }
 
-type backupInformer struct {
+type backupConfigurationInformer struct {
 	factory          internalinterfaces.SharedInformerFactory
 	tweakListOptions internalinterfaces.TweakListOptionsFunc
 	namespace        string
 }
 
-// NewBackupInformer constructs a new informer for Backup type.
+// NewBackupConfigurationInformer constructs a new informer for BackupConfiguration type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewBackupInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
-	return NewFilteredBackupInformer(client, namespace, resyncPeriod, indexers, nil)
+func NewBackupConfigurationInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
+	return NewFilteredBackupConfigurationInformer(client, namespace, resyncPeriod, indexers, nil)
 }
 
-// NewFilteredBackupInformer constructs a new informer for Backup type.
+// NewFilteredBackupConfigurationInformer constructs a new informer for BackupConfiguration type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewFilteredBackupInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
+func NewFilteredBackupConfigurationInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
 	return cache.NewSharedIndexInformer(
 		&cache.ListWatch{
 			ListFunc: func(options v1.ListOptions) (runtime.Object, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.StashV1alpha2().Backups(namespace).List(options)
+				return client.StashV1alpha2().BackupConfigurations(namespace).List(options)
 			},
 			WatchFunc: func(options v1.ListOptions) (watch.Interface, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.StashV1alpha2().Backups(namespace).Watch(options)
+				return client.StashV1alpha2().BackupConfigurations(namespace).Watch(options)
 			},
 		},
-		&stashv1alpha2.Backup{},
+		&stashv1alpha2.BackupConfiguration{},
 		resyncPeriod,
 		indexers,
 	)
 }
 
-func (f *backupInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
-	return NewFilteredBackupInformer(client, f.namespace, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
+func (f *backupConfigurationInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
+	return NewFilteredBackupConfigurationInformer(client, f.namespace, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
 }
 
-func (f *backupInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&stashv1alpha2.Backup{}, f.defaultInformer)
+func (f *backupConfigurationInformer) Informer() cache.SharedIndexInformer {
+	return f.factory.InformerFor(&stashv1alpha2.BackupConfiguration{}, f.defaultInformer)
 }
 
-func (f *backupInformer) Lister() v1alpha2.BackupLister {
-	return v1alpha2.NewBackupLister(f.Informer().GetIndexer())
+func (f *backupConfigurationInformer) Lister() v1alpha2.BackupConfigurationLister {
+	return v1alpha2.NewBackupConfigurationLister(f.Informer().GetIndexer())
 }

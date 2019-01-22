@@ -31,58 +31,58 @@ import (
 	cache "k8s.io/client-go/tools/cache"
 )
 
-// AgentTemplateInformer provides access to a shared informer and lister for
-// AgentTemplates.
-type AgentTemplateInformer interface {
+// ActionInformer provides access to a shared informer and lister for
+// Actions.
+type ActionInformer interface {
 	Informer() cache.SharedIndexInformer
-	Lister() v1alpha2.AgentTemplateLister
+	Lister() v1alpha2.ActionLister
 }
 
-type agentTemplateInformer struct {
+type actionInformer struct {
 	factory          internalinterfaces.SharedInformerFactory
 	tweakListOptions internalinterfaces.TweakListOptionsFunc
 }
 
-// NewAgentTemplateInformer constructs a new informer for AgentTemplate type.
+// NewActionInformer constructs a new informer for Action type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewAgentTemplateInformer(client versioned.Interface, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
-	return NewFilteredAgentTemplateInformer(client, resyncPeriod, indexers, nil)
+func NewActionInformer(client versioned.Interface, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
+	return NewFilteredActionInformer(client, resyncPeriod, indexers, nil)
 }
 
-// NewFilteredAgentTemplateInformer constructs a new informer for AgentTemplate type.
+// NewFilteredActionInformer constructs a new informer for Action type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewFilteredAgentTemplateInformer(client versioned.Interface, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
+func NewFilteredActionInformer(client versioned.Interface, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
 	return cache.NewSharedIndexInformer(
 		&cache.ListWatch{
 			ListFunc: func(options v1.ListOptions) (runtime.Object, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.StashV1alpha2().AgentTemplates().List(options)
+				return client.StashV1alpha2().Actions().List(options)
 			},
 			WatchFunc: func(options v1.ListOptions) (watch.Interface, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.StashV1alpha2().AgentTemplates().Watch(options)
+				return client.StashV1alpha2().Actions().Watch(options)
 			},
 		},
-		&stashv1alpha2.AgentTemplate{},
+		&stashv1alpha2.Action{},
 		resyncPeriod,
 		indexers,
 	)
 }
 
-func (f *agentTemplateInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
-	return NewFilteredAgentTemplateInformer(client, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
+func (f *actionInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
+	return NewFilteredActionInformer(client, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
 }
 
-func (f *agentTemplateInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&stashv1alpha2.AgentTemplate{}, f.defaultInformer)
+func (f *actionInformer) Informer() cache.SharedIndexInformer {
+	return f.factory.InformerFor(&stashv1alpha2.Action{}, f.defaultInformer)
 }
 
-func (f *agentTemplateInformer) Lister() v1alpha2.AgentTemplateLister {
-	return v1alpha2.NewAgentTemplateLister(f.Informer().GetIndexer())
+func (f *actionInformer) Lister() v1alpha2.ActionLister {
+	return v1alpha2.NewActionLister(f.Informer().GetIndexer())
 }

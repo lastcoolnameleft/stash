@@ -28,20 +28,24 @@ type FakeStashV1alpha2 struct {
 	*testing.Fake
 }
 
-func (c *FakeStashV1alpha2) AgentTemplates() v1alpha2.AgentTemplateInterface {
-	return &FakeAgentTemplates{c}
+func (c *FakeStashV1alpha2) Actions() v1alpha2.ActionInterface {
+	return &FakeActions{c}
 }
 
-func (c *FakeStashV1alpha2) Backups(namespace string) v1alpha2.BackupInterface {
-	return &FakeBackups{c, namespace}
+func (c *FakeStashV1alpha2) BackupConfigurations(namespace string) v1alpha2.BackupConfigurationInterface {
+	return &FakeBackupConfigurations{c, namespace}
+}
+
+func (c *FakeStashV1alpha2) BackupInstances(namespace string) v1alpha2.BackupInstanceInterface {
+	return &FakeBackupInstances{c, namespace}
 }
 
 func (c *FakeStashV1alpha2) BackupTemplates() v1alpha2.BackupTemplateInterface {
 	return &FakeBackupTemplates{c}
 }
 
-func (c *FakeStashV1alpha2) BackupTriggers(namespace string) v1alpha2.BackupTriggerInterface {
-	return &FakeBackupTriggers{c, namespace}
+func (c *FakeStashV1alpha2) DefaultBackupConfigurations() v1alpha2.DefaultBackupConfigurationInterface {
+	return &FakeDefaultBackupConfigurations{c}
 }
 
 func (c *FakeStashV1alpha2) Recoveries(namespace string) v1alpha2.RecoveryInterface {

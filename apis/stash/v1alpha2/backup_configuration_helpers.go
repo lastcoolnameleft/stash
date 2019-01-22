@@ -10,20 +10,20 @@ import (
 	hashutil "k8s.io/kubernetes/pkg/util/hash"
 )
 
-func (b Backup) GetSpecHash() string {
+func (b BackupConfiguration) GetSpecHash() string {
 	hash := fnv.New64a()
 	hashutil.DeepHashObject(hash, b.Spec)
 	return strconv.FormatUint(hash.Sum64(), 10)
 }
 
-func (bkp Backup) CustomResourceDefinition() *apiextensions.CustomResourceDefinition {
+func (bc BackupConfiguration) CustomResourceDefinition() *apiextensions.CustomResourceDefinition {
 	return crdutils.NewCustomResourceDefinition(crdutils.Config{
 		Group:         SchemeGroupVersion.Group,
-		Plural:        ResourcePluralBackup,
-		Singular:      ResourceSingularBackup,
-		Kind:          ResourceKindBackup,
-		ShortNames:    []string{"bkp"},
-		Categories:    []string{"storage", "appscode"},
+		Plural:        ResourcePluralBackupConfiguration,
+		Singular:      ResourceSingularBackupConfiguration,
+		Kind:          ResourceKindBackupConfiguration,
+		ShortNames:    []string{"bc"},
+		Categories:    []string{"stash", "appscode", "backup"},
 		ResourceScope: string(apiextensions.NamespaceScoped),
 		Versions: []apiextensions.CustomResourceDefinitionVersion{
 			{
@@ -35,26 +35,20 @@ func (bkp Backup) CustomResourceDefinition() *apiextensions.CustomResourceDefini
 		Labels: crdutils.Labels{
 			LabelsMap: map[string]string{"app": "stash"},
 		},
-		SpecDefinitionName:      "github.com/appscode/stash/apis/stash/v1alpha2.Backup",
+		SpecDefinitionName:      "github.com/appscode/stash/apis/stash/v1alpha2.BackupConfiguration",
 		EnableValidation:        true,
 		GetOpenAPIDefinitions:   GetOpenAPIDefinitions,
 		EnableStatusSubresource: apis.EnableStatusSubresource,
 		AdditionalPrinterColumns: []apiextensions.CustomResourceColumnDefinition{
 			{
-				Name:     "Agent",
+				Name:     "Template",
 				Type:     "string",
-				JSONPath: ".spec.backupAgent",
+				JSONPath: ".spec.backupTemplate",
 			},
 			{
 				Name:     "Schedule",
 				Type:     "string",
 				JSONPath: ".spec.schedule",
-			},
-			{
-				Name:     "Backup-Type",
-				Type:     "string",
-				JSONPath: ".spec.type",
-				Priority: 10,
 			},
 			{
 				Name:     "Paused",

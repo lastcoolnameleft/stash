@@ -55,7 +55,7 @@ type RecoveryTarget struct {
 	Volume *store.LocalSpec `json:"volume,omitempty"`
 	// ObjectRef refers to the workload when the recovery target is a running workload
 	// +optional
-	Workload *WorkloadRef `json:"workload,omitempty"`
+	Workload *TargetRef `json:"workload,omitempty"`
 }
 
 type RecoveryPolicy string

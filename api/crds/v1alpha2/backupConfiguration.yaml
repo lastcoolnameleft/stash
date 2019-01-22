@@ -5,18 +5,14 @@ metadata:
   creationTimestamp: null
   labels:
     app: stash
-  name: backups.stash.appscode.com
+  name: backupConfigurations.stash.appscode.com
 spec:
   additionalPrinterColumns:
-  - JSONPath: .spec.backupAgent
-    name: Agent
+  - JSONPath: .spec.backupTemplate
+    name: Template
     type: string
   - JSONPath: .spec.schedule
     name: Schedule
-    type: string
-  - JSONPath: .spec.type
-    name: Backup-Type
-    priority: 10
     type: string
   - JSONPath: .spec.paused
     name: Paused
@@ -27,13 +23,14 @@ spec:
   group: stash.appscode.com
   names:
     categories:
-    - storage
+    - stash
     - appscode
-    kind: Backup
-    plural: backups
+    - backup
+    kind: BackupConfiguration
+    plural: backupConfigurations
     shortNames:
-    - bkp
-    singular: backup
+    - bc
+    singular: backupConfiguration
   scope: Namespaced
   subresources:
     status: {}
@@ -330,13 +327,10 @@ spec:
               type: string
         spec:
           properties:
-            backupAgent:
-              description: LocalObjectReference contains enough information to let
-                you locate the referenced object inside the same namespace.
-              properties:
-                name:
-                  description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
-                  type: string
+            backupTemplate:
+              description: BackupTemplate specify the BackupTemplate crd that will
+                be used for creating backup job
+              type: string
             containerAttributes:
               properties:
                 args:
@@ -795,8 +789,8 @@ spec:
                             the container.
                           type: string
             paused:
-              description: Indicates that the Backup is paused from taking backup.
-                Default value is 'false'
+              description: Indicates that the BackupConfiguration is paused from taking
+                backup. Default value is 'false'
               type: boolean
             podAttributes:
               properties:
@@ -1609,7 +1603,6 @@ spec:
                   type: string
           required:
           - repository
-          - targetRef
   version: v1alpha2
   versions:
   - name: v1alpha2
