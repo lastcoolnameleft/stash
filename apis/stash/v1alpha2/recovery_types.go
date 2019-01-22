@@ -31,7 +31,7 @@ type RecoverySpec struct {
 	// Paths can be used to recover only specified directories from the backed up snapshot
 	Paths []string `json:"paths,omitempty"`
 	// RecoverTo indicates the target where the recovered data will be stored
-	RecoverTo TargetRef `json:"recoverTo,omitempty"`
+	RecoverTo Target `json:"recoverTo,omitempty"`
 	// RecoveryPolicy specifies weather to recover only once or recover always when workload restart for a particular Recovery crd.
 	// +optional
 	RecoveryPolicy `json:"recoveryPolicy,omitempty"`

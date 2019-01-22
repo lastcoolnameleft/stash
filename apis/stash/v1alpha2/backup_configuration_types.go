@@ -29,9 +29,9 @@ type BackupConfigurationSpec struct {
 	BackupTemplate string `json:"backupTemplate,omitempty"`
 	// Repository refer to the Repository crd that holds backend information
 	Repository core.LocalObjectReference `json:"repository"`
-	// TargetRef specify the backup target
+	// Target specify the backup target
 	// +optional
-	*TargetRef `json:"targetRef,omitempty"`
+	*Target `json:"target,omitempty"`
 	// TargetDirectories specify the directories to backup when the target is a volume
 	//+optional
 	TargetDirectories []string `json:"targetDirectories,omitempty"`
@@ -81,7 +81,7 @@ type RetentionPolicy struct {
 	DryRun      bool     `json:"dryRun,omitempty"`
 }
 
-type TargetRef struct {
+type Target struct {
 	// Volume specifies the target volume to backup
 	//+optional
 	Volume *store.LocalSpec `json:"volume,omitempty"`

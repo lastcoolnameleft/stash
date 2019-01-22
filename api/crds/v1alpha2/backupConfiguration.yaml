@@ -1587,13 +1587,7 @@ spec:
                   type: boolean
             schedule:
               type: string
-            targetDirectories:
-              description: TargetDirectories specify the directories to backup when
-                the target is a volume
-              items:
-                type: string
-              type: array
-            targetRef:
+            target:
               properties:
                 volume:
                   properties:
@@ -2769,6 +2763,12 @@ spec:
                       type: string
                     name:
                       type: string
+            targetDirectories:
+              description: TargetDirectories specify the directories to backup when
+                the target is a volume
+              items:
+                type: string
+              type: array
           required:
           - repository
   version: v1alpha2
