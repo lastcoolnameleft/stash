@@ -24,9 +24,9 @@ type BackupConfiguration struct {
 
 type BackupConfigurationSpec struct {
 	Schedule string `json:"schedule,omitempty"`
-	// BackupTemplate specify the BackupTemplate crd that will be used for creating backup job
+	// StashTemplate specify the StashTemplate crd that will be used for creating backup job
 	// +optional
-	BackupTemplate string `json:"backupTemplate,omitempty"`
+	StashTemplate string `json:"stashTemplate,omitempty"`
 	// Repository refer to the Repository crd that holds backend information
 	Repository core.LocalObjectReference `json:"repository"`
 	// Target specify the backup target

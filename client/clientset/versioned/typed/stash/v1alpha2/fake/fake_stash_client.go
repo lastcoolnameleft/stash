@@ -40,10 +40,6 @@ func (c *FakeStashV1alpha2) BackupInstances(namespace string) v1alpha2.BackupIns
 	return &FakeBackupInstances{c, namespace}
 }
 
-func (c *FakeStashV1alpha2) BackupTemplates() v1alpha2.BackupTemplateInterface {
-	return &FakeBackupTemplates{c}
-}
-
 func (c *FakeStashV1alpha2) DefaultBackupConfigurations() v1alpha2.DefaultBackupConfigurationInterface {
 	return &FakeDefaultBackupConfigurations{c}
 }
@@ -54,6 +50,10 @@ func (c *FakeStashV1alpha2) Recoveries(namespace string) v1alpha2.RecoveryInterf
 
 func (c *FakeStashV1alpha2) Repositories(namespace string) v1alpha2.RepositoryInterface {
 	return &FakeRepositories{c, namespace}
+}
+
+func (c *FakeStashV1alpha2) StashTemplates() v1alpha2.StashTemplateInterface {
+	return &FakeStashTemplates{c}
 }
 
 // RESTClient returns a RESTClient that is used to communicate

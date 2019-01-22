@@ -2740,6 +2740,10 @@ spec:
             snapshot:
               description: Snapshot to recover. Default is latest snapshot.
               type: string
+            stashTemplate:
+              description: StashTemplate specify the StashTemplate crd that will be
+                used for creating recovery job
+              type: string
           required:
           - repository
         status:

@@ -25,9 +25,9 @@ type DefaultBackupConfigurationSpec struct {
 	// RepositorySpec is used to create Repository crd for respective workload
 	RepositorySpec `json:",inline"`
 	Schedule       string `json:"schedule,omitempty"`
-	// BackupTemplate specify the BackupTemplate crd that will be used for creating backup job
+	// StashTemplate specify the StashTemplate crd that will be used for creating backup job
 	// +optional
-	BackupTemplate string `json:"backupTemplate,omitempty"`
+	StashTemplate string `json:"stashTemplate,omitempty"`
 	// RetentionPolicy indicates the policy to follow to clean old backup snapshots
 	RetentionPolicy `json:"retentionPolicy,omitempty"`
 	// ContainerAttributes allow to specify Resources, SecurityContext, ReadinessProbe etc. for backup sidecar or job's container

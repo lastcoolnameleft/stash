@@ -43,7 +43,7 @@ func (bc BackupConfiguration) CustomResourceDefinition() *apiextensions.CustomRe
 			{
 				Name:     "Template",
 				Type:     "string",
-				JSONPath: ".spec.backupTemplate",
+				JSONPath: ".spec.stashTemplate",
 			},
 			{
 				Name:     "Schedule",

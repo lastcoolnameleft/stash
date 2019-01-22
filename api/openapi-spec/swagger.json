@@ -610,9 +610,9 @@
         }
       ]
     },
-    "/apis/stash.appscode.com/v1alpha2/backuptemplates": {
+    "/apis/stash.appscode.com/v1alpha2/StashTemplates": {
       "get": {
-        "description": "list or watch objects of kind BackupTemplate",
+        "description": "list or watch objects of kind StashTemplate",
         "consumes": [
           "*/*"
         ],
@@ -629,7 +629,7 @@
         "tags": [
           "stashAppscodeCom_v1alpha2"
         ],
-        "operationId": "listStashAppscodeComV1alpha2BackupTemplate",
+        "operationId": "listStashAppscodeComV1alpha2StashTemplate",
         "parameters": [
           {
             "uniqueItems": true,
@@ -692,7 +692,7 @@
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/com.github.appscode.stash.apis.stash.v1alpha2.BackupTemplateList"
+              "$ref": "#/definitions/com.github.appscode.stash.apis.stash.v1alpha2.StashTemplateList"
             }
           }
         },
@@ -700,11 +700,11 @@
         "x-kubernetes-group-version-kind": {
           "group": "stash.appscode.com",
           "version": "v1alpha2",
-          "kind": "BackupTemplate"
+          "kind": "StashTemplate"
         }
       },
       "post": {
-        "description": "create a BackupTemplate",
+        "description": "create a StashTemplate",
         "consumes": [
           "*/*"
         ],
@@ -719,14 +719,14 @@
         "tags": [
           "stashAppscodeCom_v1alpha2"
         ],
-        "operationId": "createStashAppscodeComV1alpha2BackupTemplate",
+        "operationId": "createStashAppscodeComV1alpha2StashTemplate",
         "parameters": [
           {
             "name": "body",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/com.github.appscode.stash.apis.stash.v1alpha2.BackupTemplate"
+              "$ref": "#/definitions/com.github.appscode.stash.apis.stash.v1alpha2.StashTemplate"
             }
           }
         ],
@@ -734,19 +734,19 @@
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/com.github.appscode.stash.apis.stash.v1alpha2.BackupTemplate"
+              "$ref": "#/definitions/com.github.appscode.stash.apis.stash.v1alpha2.StashTemplate"
             }
           },
           "201": {
             "description": "Created",
             "schema": {
-              "$ref": "#/definitions/com.github.appscode.stash.apis.stash.v1alpha2.BackupTemplate"
+              "$ref": "#/definitions/com.github.appscode.stash.apis.stash.v1alpha2.StashTemplate"
             }
           },
           "202": {
             "description": "Accepted",
             "schema": {
-              "$ref": "#/definitions/com.github.appscode.stash.apis.stash.v1alpha2.BackupTemplate"
+              "$ref": "#/definitions/com.github.appscode.stash.apis.stash.v1alpha2.StashTemplate"
             }
           }
         },
@@ -754,11 +754,11 @@
         "x-kubernetes-group-version-kind": {
           "group": "stash.appscode.com",
           "version": "v1alpha2",
-          "kind": "BackupTemplate"
+          "kind": "StashTemplate"
         }
       },
       "delete": {
-        "description": "delete collection of BackupTemplate",
+        "description": "delete collection of StashTemplate",
         "consumes": [
           "*/*"
         ],
@@ -773,7 +773,7 @@
         "tags": [
           "stashAppscodeCom_v1alpha2"
         ],
-        "operationId": "deleteStashAppscodeComV1alpha2CollectionBackupTemplate",
+        "operationId": "deleteStashAppscodeComV1alpha2CollectionStashTemplate",
         "parameters": [
           {
             "uniqueItems": true,
@@ -844,7 +844,7 @@
         "x-kubernetes-group-version-kind": {
           "group": "stash.appscode.com",
           "version": "v1alpha2",
-          "kind": "BackupTemplate"
+          "kind": "StashTemplate"
         }
       },
       "parameters": [
@@ -857,9 +857,9 @@
         }
       ]
     },
-    "/apis/stash.appscode.com/v1alpha2/backuptemplates/{name}": {
+    "/apis/stash.appscode.com/v1alpha2/StashTemplates/{name}": {
       "get": {
-        "description": "read the specified BackupTemplate",
+        "description": "read the specified StashTemplate",
         "consumes": [
           "*/*"
         ],
@@ -874,12 +874,12 @@
         "tags": [
           "stashAppscodeCom_v1alpha2"
         ],
-        "operationId": "readStashAppscodeComV1alpha2BackupTemplate",
+        "operationId": "readStashAppscodeComV1alpha2StashTemplate",
         "responses": {
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/com.github.appscode.stash.apis.stash.v1alpha2.BackupTemplate"
+              "$ref": "#/definitions/com.github.appscode.stash.apis.stash.v1alpha2.StashTemplate"
             }
           }
         },
@@ -887,11 +887,11 @@
         "x-kubernetes-group-version-kind": {
           "group": "stash.appscode.com",
           "version": "v1alpha2",
-          "kind": "BackupTemplate"
+          "kind": "StashTemplate"
         }
       },
       "put": {
-        "description": "replace the specified BackupTemplate",
+        "description": "replace the specified StashTemplate",
         "consumes": [
           "*/*"
         ],
@@ -906,14 +906,14 @@
         "tags": [
           "stashAppscodeCom_v1alpha2"
         ],
-        "operationId": "replaceStashAppscodeComV1alpha2BackupTemplate",
+        "operationId": "replaceStashAppscodeComV1alpha2StashTemplate",
         "parameters": [
           {
             "name": "body",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/com.github.appscode.stash.apis.stash.v1alpha2.BackupTemplate"
+              "$ref": "#/definitions/com.github.appscode.stash.apis.stash.v1alpha2.StashTemplate"
             }
           }
         ],
@@ -921,13 +921,13 @@
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/com.github.appscode.stash.apis.stash.v1alpha2.BackupTemplate"
+              "$ref": "#/definitions/com.github.appscode.stash.apis.stash.v1alpha2.StashTemplate"
             }
           },
           "201": {
             "description": "Created",
             "schema": {
-              "$ref": "#/definitions/com.github.appscode.stash.apis.stash.v1alpha2.BackupTemplate"
+              "$ref": "#/definitions/com.github.appscode.stash.apis.stash.v1alpha2.StashTemplate"
             }
           }
         },
@@ -935,11 +935,11 @@
         "x-kubernetes-group-version-kind": {
           "group": "stash.appscode.com",
           "version": "v1alpha2",
-          "kind": "BackupTemplate"
+          "kind": "StashTemplate"
         }
       },
       "delete": {
-        "description": "delete a BackupTemplate",
+        "description": "delete a StashTemplate",
         "consumes": [
           "*/*"
         ],
@@ -954,7 +954,7 @@
         "tags": [
           "stashAppscodeCom_v1alpha2"
         ],
-        "operationId": "deleteStashAppscodeComV1alpha2BackupTemplate",
+        "operationId": "deleteStashAppscodeComV1alpha2StashTemplate",
         "parameters": [
           {
             "name": "body",
@@ -1011,11 +1011,11 @@
         "x-kubernetes-group-version-kind": {
           "group": "stash.appscode.com",
           "version": "v1alpha2",
-          "kind": "BackupTemplate"
+          "kind": "StashTemplate"
         }
       },
       "patch": {
-        "description": "partially update the specified BackupTemplate",
+        "description": "partially update the specified StashTemplate",
         "consumes": [
           "application/json-patch+json",
           "application/merge-patch+json",
@@ -1032,7 +1032,7 @@
         "tags": [
           "stashAppscodeCom_v1alpha2"
         ],
-        "operationId": "patchStashAppscodeComV1alpha2BackupTemplate",
+        "operationId": "patchStashAppscodeComV1alpha2StashTemplate",
         "parameters": [
           {
             "name": "body",
@@ -1047,7 +1047,7 @@
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/com.github.appscode.stash.apis.stash.v1alpha2.BackupTemplate"
+              "$ref": "#/definitions/com.github.appscode.stash.apis.stash.v1alpha2.StashTemplate"
             }
           }
         },
@@ -1055,14 +1055,14 @@
         "x-kubernetes-group-version-kind": {
           "group": "stash.appscode.com",
           "version": "v1alpha2",
-          "kind": "BackupTemplate"
+          "kind": "StashTemplate"
         }
       },
       "parameters": [
         {
           "uniqueItems": true,
           "type": "string",
-          "description": "name of the BackupTemplate",
+          "description": "name of the StashTemplate",
           "name": "name",
           "in": "path",
           "required": true
@@ -3874,9 +3874,9 @@
         }
       ]
     },
-    "/apis/stash.appscode.com/v1alpha2/watch/backuptemplates": {
+    "/apis/stash.appscode.com/v1alpha2/watch/StashTemplates": {
       "get": {
-        "description": "watch individual changes to a list of BackupTemplate. deprecated: use the 'watch' parameter with a list operation instead.",
+        "description": "watch individual changes to a list of StashTemplate. deprecated: use the 'watch' parameter with a list operation instead.",
         "consumes": [
           "*/*"
         ],
@@ -3893,7 +3893,7 @@
         "tags": [
           "stashAppscodeCom_v1alpha2"
         ],
-        "operationId": "watchStashAppscodeComV1alpha2BackupTemplateList",
+        "operationId": "watchStashAppscodeComV1alpha2StashTemplateList",
         "responses": {
           "200": {
             "description": "OK",
@@ -3906,7 +3906,7 @@
         "x-kubernetes-group-version-kind": {
           "group": "stash.appscode.com",
           "version": "v1alpha2",
-          "kind": "BackupTemplate"
+          "kind": "StashTemplate"
         }
       },
       "parameters": [
@@ -3975,9 +3975,9 @@
         }
       ]
     },
-    "/apis/stash.appscode.com/v1alpha2/watch/backuptemplates/{name}": {
+    "/apis/stash.appscode.com/v1alpha2/watch/StashTemplates/{name}": {
       "get": {
-        "description": "watch changes to an object of kind BackupTemplate. deprecated: use the 'watch' parameter with a list operation instead, filtered to a single item with the 'fieldSelector' parameter.",
+        "description": "watch changes to an object of kind StashTemplate. deprecated: use the 'watch' parameter with a list operation instead, filtered to a single item with the 'fieldSelector' parameter.",
         "consumes": [
           "*/*"
         ],
@@ -3994,7 +3994,7 @@
         "tags": [
           "stashAppscodeCom_v1alpha2"
         ],
-        "operationId": "watchStashAppscodeComV1alpha2BackupTemplate",
+        "operationId": "watchStashAppscodeComV1alpha2StashTemplate",
         "responses": {
           "200": {
             "description": "OK",
@@ -4007,7 +4007,7 @@
         "x-kubernetes-group-version-kind": {
           "group": "stash.appscode.com",
           "version": "v1alpha2",
-          "kind": "BackupTemplate"
+          "kind": "StashTemplate"
         }
       },
       "parameters": [
@@ -4049,7 +4049,7 @@
         {
           "uniqueItems": true,
           "type": "string",
-          "description": "name of the BackupTemplate",
+          "description": "name of the StashTemplate",
           "name": "name",
           "in": "path",
           "required": true
@@ -5704,7 +5704,7 @@
         }
       }
     },
-    "com.github.appscode.stash.apis.stash.v1alpha2.BackupTemplate": {
+    "com.github.appscode.stash.apis.stash.v1alpha2.StashTemplate": {
       "properties": {
         "apiVersion": {
           "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#resources",
@@ -5718,18 +5718,18 @@
           "$ref": "#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta"
         },
         "spec": {
-          "$ref": "#/definitions/com.github.appscode.stash.apis.stash.v1alpha2.BackupTemplateSpec"
+          "$ref": "#/definitions/com.github.appscode.stash.apis.stash.v1alpha2.StashTemplateSpec"
         }
       },
       "x-kubernetes-group-version-kind": [
         {
           "group": "stash.appscode.com",
           "version": "v1alpha2",
-          "kind": "BackupTemplate"
+          "kind": "StashTemplate"
         }
       ]
     },
-    "com.github.appscode.stash.apis.stash.v1alpha2.BackupTemplateList": {
+    "com.github.appscode.stash.apis.stash.v1alpha2.StashTemplateList": {
       "properties": {
         "apiVersion": {
           "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#resources",
@@ -5738,7 +5738,7 @@
         "items": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/com.github.appscode.stash.apis.stash.v1alpha2.BackupTemplate"
+            "$ref": "#/definitions/com.github.appscode.stash.apis.stash.v1alpha2.StashTemplate"
           }
         },
         "kind": {
@@ -5753,11 +5753,11 @@
         {
           "group": "stash.appscode.com",
           "version": "v1alpha2",
-          "kind": "BackupTemplateList"
+          "kind": "StashTemplateList"
         }
       ]
     },
-    "com.github.appscode.stash.apis.stash.v1alpha2.BackupTemplateSpec": {
+    "com.github.appscode.stash.apis.stash.v1alpha2.StashTemplateSpec": {
       "properties": {
         "backend": {
           "description": "Backend specify the storage where backed up snapshot will be stored",

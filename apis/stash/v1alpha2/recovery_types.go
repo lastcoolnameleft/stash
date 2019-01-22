@@ -25,6 +25,9 @@ type Recovery struct {
 type RecoverySpec struct {
 	// Repository refer to the Repository crd that hold backend information
 	Repository RepoRef `json:"repository"`
+	// StashTemplate specify the StashTemplate crd that will be used for creating recovery job
+	// +optional
+	StashTemplate string `json:"stashTemplate,omitempty"`
 	// Snapshot to recover. Default is latest snapshot.
 	// +optional
 	Snapshot string `json:"snapshot,omitempty"`

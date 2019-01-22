@@ -5,9 +5,9 @@ import (
 )
 
 const (
-	ResourceKindBackupTemplate     = "BackupTemplate"
-	ResourcePluralBackupTemplate   = "backupTemplates"
-	ResourceSingularBackupTemplate = "backupTemplate"
+	ResourceKindStashTemplate     = "StashTemplate"
+	ResourcePluralStashTemplate   = "stashTemplates"
+	ResourceSingularStashTemplate = "stashTemplate"
 )
 
 // +genclient
@@ -15,13 +15,13 @@ const (
 // +k8s:openapi-gen=true
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-type BackupTemplate struct {
+type StashTemplate struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
-	Spec              BackupTemplateSpec `json:"spec,omitempty"`
+	Spec              StashTemplateSpec `json:"spec,omitempty"`
 }
 
-type BackupTemplateSpec struct {
+type StashTemplateSpec struct {
 	Actions []Steps `json:"actions,omitempty"`
 }
 
@@ -35,8 +35,8 @@ type Steps struct {
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-type BackupTemplateList struct {
+type StashTemplateList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []BackupTemplate `json:"items,omitempty"`
+	Items           []StashTemplate `json:"items,omitempty"`
 }

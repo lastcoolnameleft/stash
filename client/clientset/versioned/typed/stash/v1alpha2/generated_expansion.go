@@ -24,10 +24,10 @@ type BackupConfigurationExpansion interface{}
 
 type BackupInstanceExpansion interface{}
 
-type BackupTemplateExpansion interface{}
-
 type DefaultBackupConfigurationExpansion interface{}
 
 type RecoveryExpansion interface{}
 
 type RepositoryExpansion interface{}
+
+type StashTemplateExpansion interface{}

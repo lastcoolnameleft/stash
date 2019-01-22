@@ -38,10 +38,6 @@ type BackupInstanceListerExpansion interface{}
 // BackupInstanceNamespaceLister.
 type BackupInstanceNamespaceListerExpansion interface{}
 
-// BackupTemplateListerExpansion allows custom methods to be added to
-// BackupTemplateLister.
-type BackupTemplateListerExpansion interface{}
-
 // DefaultBackupConfigurationListerExpansion allows custom methods to be added to
 // DefaultBackupConfigurationLister.
 type DefaultBackupConfigurationListerExpansion interface{}
@@ -61,3 +57,7 @@ type RepositoryListerExpansion interface{}
 // RepositoryNamespaceListerExpansion allows custom methods to be added to
 // RepositoryNamespaceLister.
 type RepositoryNamespaceListerExpansion interface{}
+
+// StashTemplateListerExpansion allows custom methods to be added to
+// StashTemplateLister.
+type StashTemplateListerExpansion interface{}

@@ -46,9 +46,6 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"github.com/appscode/stash/apis/stash/v1alpha2.BackupInstanceSpec":             schema_stash_apis_stash_v1alpha2_BackupInstanceSpec(ref),
 		"github.com/appscode/stash/apis/stash/v1alpha2.BackupInstanceStatus":           schema_stash_apis_stash_v1alpha2_BackupInstanceStatus(ref),
 		"github.com/appscode/stash/apis/stash/v1alpha2.BackupStats":                    schema_stash_apis_stash_v1alpha2_BackupStats(ref),
-		"github.com/appscode/stash/apis/stash/v1alpha2.BackupTemplate":                 schema_stash_apis_stash_v1alpha2_BackupTemplate(ref),
-		"github.com/appscode/stash/apis/stash/v1alpha2.BackupTemplateList":             schema_stash_apis_stash_v1alpha2_BackupTemplateList(ref),
-		"github.com/appscode/stash/apis/stash/v1alpha2.BackupTemplateSpec":             schema_stash_apis_stash_v1alpha2_BackupTemplateSpec(ref),
 		"github.com/appscode/stash/apis/stash/v1alpha2.ContainerAttributes":            schema_stash_apis_stash_v1alpha2_ContainerAttributes(ref),
 		"github.com/appscode/stash/apis/stash/v1alpha2.DefaultBackupConfiguration":     schema_stash_apis_stash_v1alpha2_DefaultBackupConfiguration(ref),
 		"github.com/appscode/stash/apis/stash/v1alpha2.DefaultBackupConfigurationList": schema_stash_apis_stash_v1alpha2_DefaultBackupConfigurationList(ref),
@@ -66,6 +63,9 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"github.com/appscode/stash/apis/stash/v1alpha2.RepositoryStatus":               schema_stash_apis_stash_v1alpha2_RepositoryStatus(ref),
 		"github.com/appscode/stash/apis/stash/v1alpha2.RestoreStats":                   schema_stash_apis_stash_v1alpha2_RestoreStats(ref),
 		"github.com/appscode/stash/apis/stash/v1alpha2.RetentionPolicy":                schema_stash_apis_stash_v1alpha2_RetentionPolicy(ref),
+		"github.com/appscode/stash/apis/stash/v1alpha2.StashTemplate":                  schema_stash_apis_stash_v1alpha2_StashTemplate(ref),
+		"github.com/appscode/stash/apis/stash/v1alpha2.StashTemplateList":              schema_stash_apis_stash_v1alpha2_StashTemplateList(ref),
+		"github.com/appscode/stash/apis/stash/v1alpha2.StashTemplateSpec":              schema_stash_apis_stash_v1alpha2_StashTemplateSpec(ref),
 		"github.com/appscode/stash/apis/stash/v1alpha2.Steps":                          schema_stash_apis_stash_v1alpha2_Steps(ref),
 		"github.com/appscode/stash/apis/stash/v1alpha2.Target":                         schema_stash_apis_stash_v1alpha2_Target(ref),
 		"github.com/appscode/stash/apis/stash/v1alpha2.WorkloadRef":                    schema_stash_apis_stash_v1alpha2_WorkloadRef(ref),
@@ -524,9 +524,9 @@ func schema_stash_apis_stash_v1alpha2_BackupConfigurationSpec(ref common.Referen
 							Format: "",
 						},
 					},
-					"backupTemplate": {
+					"stashTemplate": {
 						SchemaProps: spec.SchemaProps{
-							Description: "BackupTemplate specify the BackupTemplate crd that will be used for creating backup job",
+							Description: "StashTemplate specify the StashTemplate crd that will be used for creating backup job",
 							Type:        []string{"string"},
 							Format:      "",
 						},
@@ -776,112 +776,6 @@ func schema_stash_apis_stash_v1alpha2_BackupStats(ref common.ReferenceCallback) 
 	}
 }
 
-func schema_stash_apis_stash_v1alpha2_BackupTemplate(ref common.ReferenceCallback) common.OpenAPIDefinition {
-	return common.OpenAPIDefinition{
-		Schema: spec.Schema{
-			SchemaProps: spec.SchemaProps{
-				Properties: map[string]spec.Schema{
-					"kind": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"apiVersion": {
-						SchemaProps: spec.SchemaProps{
-							Description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#resources",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"metadata": {
-						SchemaProps: spec.SchemaProps{
-							Ref: ref("k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"),
-						},
-					},
-					"spec": {
-						SchemaProps: spec.SchemaProps{
-							Ref: ref("github.com/appscode/stash/apis/stash/v1alpha2.BackupTemplateSpec"),
-						},
-					},
-				},
-			},
-		},
-		Dependencies: []string{
-			"github.com/appscode/stash/apis/stash/v1alpha2.BackupTemplateSpec", "k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"},
-	}
-}
-
-func schema_stash_apis_stash_v1alpha2_BackupTemplateList(ref common.ReferenceCallback) common.OpenAPIDefinition {
-	return common.OpenAPIDefinition{
-		Schema: spec.Schema{
-			SchemaProps: spec.SchemaProps{
-				Properties: map[string]spec.Schema{
-					"kind": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"apiVersion": {
-						SchemaProps: spec.SchemaProps{
-							Description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#resources",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"metadata": {
-						SchemaProps: spec.SchemaProps{
-							Ref: ref("k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta"),
-						},
-					},
-					"items": {
-						SchemaProps: spec.SchemaProps{
-							Type: []string{"array"},
-							Items: &spec.SchemaOrArray{
-								Schema: &spec.Schema{
-									SchemaProps: spec.SchemaProps{
-										Ref: ref("github.com/appscode/stash/apis/stash/v1alpha2.BackupTemplate"),
-									},
-								},
-							},
-						},
-					},
-				},
-			},
-		},
-		Dependencies: []string{
-			"github.com/appscode/stash/apis/stash/v1alpha2.BackupTemplate", "k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta"},
-	}
-}
-
-func schema_stash_apis_stash_v1alpha2_BackupTemplateSpec(ref common.ReferenceCallback) common.OpenAPIDefinition {
-	return common.OpenAPIDefinition{
-		Schema: spec.Schema{
-			SchemaProps: spec.SchemaProps{
-				Properties: map[string]spec.Schema{
-					"actions": {
-						SchemaProps: spec.SchemaProps{
-							Type: []string{"array"},
-							Items: &spec.SchemaOrArray{
-								Schema: &spec.Schema{
-									SchemaProps: spec.SchemaProps{
-										Ref: ref("github.com/appscode/stash/apis/stash/v1alpha2.Steps"),
-									},
-								},
-							},
-						},
-					},
-				},
-			},
-		},
-		Dependencies: []string{
-			"github.com/appscode/stash/apis/stash/v1alpha2.Steps"},
-	}
-}
-
 func schema_stash_apis_stash_v1alpha2_ContainerAttributes(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
@@ -1044,9 +938,9 @@ func schema_stash_apis_stash_v1alpha2_DefaultBackupConfigurationSpec(ref common.
 							Format: "",
 						},
 					},
-					"backupTemplate": {
+					"stashTemplate": {
 						SchemaProps: spec.SchemaProps{
-							Description: "BackupTemplate specify the BackupTemplate crd that will be used for creating backup job",
+							Description: "StashTemplate specify the StashTemplate crd that will be used for creating backup job",
 							Type:        []string{"string"},
 							Format:      "",
 						},
@@ -1295,6 +1189,13 @@ func schema_stash_apis_stash_v1alpha2_RecoverySpec(ref common.ReferenceCallback)
 						SchemaProps: spec.SchemaProps{
 							Description: "Repository refer to the Repository crd that hold backend information",
 							Ref:         ref("github.com/appscode/stash/apis/stash/v1alpha2.RepoRef"),
+						},
+					},
+					"stashTemplate": {
+						SchemaProps: spec.SchemaProps{
+							Description: "StashTemplate specify the StashTemplate crd that will be used for creating recovery job",
+							Type:        []string{"string"},
+							Format:      "",
 						},
 					},
 					"snapshot": {
@@ -1683,6 +1584,112 @@ func schema_stash_apis_stash_v1alpha2_RetentionPolicy(ref common.ReferenceCallba
 			},
 		},
 		Dependencies: []string{},
+	}
+}
+
+func schema_stash_apis_stash_v1alpha2_StashTemplate(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Properties: map[string]spec.Schema{
+					"kind": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"apiVersion": {
+						SchemaProps: spec.SchemaProps{
+							Description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#resources",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"metadata": {
+						SchemaProps: spec.SchemaProps{
+							Ref: ref("k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"),
+						},
+					},
+					"spec": {
+						SchemaProps: spec.SchemaProps{
+							Ref: ref("github.com/appscode/stash/apis/stash/v1alpha2.StashTemplateSpec"),
+						},
+					},
+				},
+			},
+		},
+		Dependencies: []string{
+			"github.com/appscode/stash/apis/stash/v1alpha2.StashTemplateSpec", "k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"},
+	}
+}
+
+func schema_stash_apis_stash_v1alpha2_StashTemplateList(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Properties: map[string]spec.Schema{
+					"kind": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"apiVersion": {
+						SchemaProps: spec.SchemaProps{
+							Description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#resources",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"metadata": {
+						SchemaProps: spec.SchemaProps{
+							Ref: ref("k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta"),
+						},
+					},
+					"items": {
+						SchemaProps: spec.SchemaProps{
+							Type: []string{"array"},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Ref: ref("github.com/appscode/stash/apis/stash/v1alpha2.StashTemplate"),
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		Dependencies: []string{
+			"github.com/appscode/stash/apis/stash/v1alpha2.StashTemplate", "k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta"},
+	}
+}
+
+func schema_stash_apis_stash_v1alpha2_StashTemplateSpec(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Properties: map[string]spec.Schema{
+					"actions": {
+						SchemaProps: spec.SchemaProps{
+							Type: []string{"array"},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Ref: ref("github.com/appscode/stash/apis/stash/v1alpha2.Steps"),
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		Dependencies: []string{
+			"github.com/appscode/stash/apis/stash/v1alpha2.Steps"},
 	}
 }
 

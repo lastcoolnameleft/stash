@@ -31,58 +31,58 @@ import (
 	cache "k8s.io/client-go/tools/cache"
 )
 
-// BackupTemplateInformer provides access to a shared informer and lister for
-// BackupTemplates.
-type BackupTemplateInformer interface {
+// StashTemplateInformer provides access to a shared informer and lister for
+// StashTemplates.
+type StashTemplateInformer interface {
 	Informer() cache.SharedIndexInformer
-	Lister() v1alpha2.BackupTemplateLister
+	Lister() v1alpha2.StashTemplateLister
 }
 
-type backupTemplateInformer struct {
+type stashTemplateInformer struct {
 	factory          internalinterfaces.SharedInformerFactory
 	tweakListOptions internalinterfaces.TweakListOptionsFunc
 }
 
-// NewBackupTemplateInformer constructs a new informer for BackupTemplate type.
+// NewStashTemplateInformer constructs a new informer for StashTemplate type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewBackupTemplateInformer(client versioned.Interface, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
-	return NewFilteredBackupTemplateInformer(client, resyncPeriod, indexers, nil)
+func NewStashTemplateInformer(client versioned.Interface, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
+	return NewFilteredStashTemplateInformer(client, resyncPeriod, indexers, nil)
 }
 
-// NewFilteredBackupTemplateInformer constructs a new informer for BackupTemplate type.
+// NewFilteredStashTemplateInformer constructs a new informer for StashTemplate type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewFilteredBackupTemplateInformer(client versioned.Interface, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
+func NewFilteredStashTemplateInformer(client versioned.Interface, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
 	return cache.NewSharedIndexInformer(
 		&cache.ListWatch{
 			ListFunc: func(options v1.ListOptions) (runtime.Object, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.StashV1alpha2().BackupTemplates().List(options)
+				return client.StashV1alpha2().StashTemplates().List(options)
 			},
 			WatchFunc: func(options v1.ListOptions) (watch.Interface, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.StashV1alpha2().BackupTemplates().Watch(options)
+				return client.StashV1alpha2().StashTemplates().Watch(options)
 			},
 		},
-		&stashv1alpha2.BackupTemplate{},
+		&stashv1alpha2.StashTemplate{},
 		resyncPeriod,
 		indexers,
 	)
 }
 
-func (f *backupTemplateInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
-	return NewFilteredBackupTemplateInformer(client, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
+func (f *stashTemplateInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
+	return NewFilteredStashTemplateInformer(client, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
 }
 
-func (f *backupTemplateInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&stashv1alpha2.BackupTemplate{}, f.defaultInformer)
+func (f *stashTemplateInformer) Informer() cache.SharedIndexInformer {
+	return f.factory.InformerFor(&stashv1alpha2.StashTemplate{}, f.defaultInformer)
 }
 
-func (f *backupTemplateInformer) Lister() v1alpha2.BackupTemplateLister {
-	return v1alpha2.NewBackupTemplateLister(f.Informer().GetIndexer())
+func (f *stashTemplateInformer) Lister() v1alpha2.StashTemplateLister {
+	return v1alpha2.NewStashTemplateLister(f.Informer().GetIndexer())
 }

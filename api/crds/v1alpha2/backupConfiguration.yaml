@@ -8,7 +8,7 @@ metadata:
   name: backupConfigurations.stash.appscode.com
 spec:
   additionalPrinterColumns:
-  - JSONPath: .spec.backupTemplate
+  - JSONPath: .spec.stashTemplate
     name: Template
     type: string
   - JSONPath: .spec.schedule
@@ -327,10 +327,6 @@ spec:
               type: string
         spec:
           properties:
-            backupTemplate:
-              description: BackupTemplate specify the BackupTemplate crd that will
-                be used for creating backup job
-              type: string
             containerAttributes:
               properties:
                 args:
@@ -1586,6 +1582,10 @@ spec:
                 prune:
                   type: boolean
             schedule:
+              type: string
+            stashTemplate:
+              description: StashTemplate specify the StashTemplate crd that will be
+                used for creating backup job
               type: string
             target:
               properties:

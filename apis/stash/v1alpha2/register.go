@@ -38,14 +38,14 @@ func addKnownTypes(scheme *runtime.Scheme) error {
 		&BackupConfigurationList{},
 		&BackupInstance{},
 		&BackupInstanceList{},
-		&BackupTemplate{},
-		&BackupTemplateList{},
 		&DefaultBackupConfiguration{},
 		&DefaultBackupConfigurationList{},
 		&Recovery{},
 		&RecoveryList{},
 		&Repository{},
 		&RepositoryList{},
+		&StashTemplate{},
+		&StashTemplateList{},
 	)
 
 	scheme.AddKnownTypes(SchemeGroupVersion,
