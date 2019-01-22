@@ -1,0 +1,20 @@
+apiVersion: stash.appscode.com/v1alpha2
+kind: BackupInstance
+metadata:
+  name: backup-volume-demo-instance
+  namespace: demo
+spec:
+  # targetBackupConfiguration indicates the BackupConfiguration crd of respective target that we want to backup
+  targetBackupConfiguration:
+    name: backup-volume-demo
+status:
+  observedGeneration: 239844#2
+  phase: Succeed
+  stats:
+    snapshot: 40dc1520
+    size: 1.720 GiB
+    uploaded: 1.200 GiB # upload size can be smaller than original file size if there are some duplicate files
+    fileStats:
+      new: 5307
+      changed: 0
+      unmodified: 0

@@ -9,7 +9,7 @@ metadata:
     stash.appscode.com/stashTemplate: "volumeBackup"
 spec:
   accessModes:
-  - ReadWriteOnce
+  - ReadWriteMany
   resources:
     requests:
       storage: 1Gi

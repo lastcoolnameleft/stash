@@ -4,25 +4,29 @@ We are going to make a design overhaul of Stash to simplify backup and recovery 
 
 
 
+We  have introduced some new crd  such as [StashTemplate](#stashtemplate), [Action](#action) etc. and made whole process more modular to make stash resources inter-operable between different tools.  This might allow to use stash resources as function in serverless concept.
+
 ## Goal
 
 Goal of this new design to support following features:
 
-- Schedule Backup and Recover Volume
-- Schedule Backup and Recover Database
-- Trigger  Backup Instantly
-- Recover in Running Workload
-- Default Backup
-- Auto Recovery
+- [Schedule Backup](#backup-workload-data) and [Recover](#recover-workload-data) Workload Data
 
-## Backup Volume
+- [Schedule Backup](#backup-volume) and [Recover](#recover-volume) Volume
+- [Schedule Backup](#backup-database) and [Recover](#recover-database) Database
+- [Schedule Backup Cluster YAMLs](#cluster-yaml-backup)
+- [Trigger  Backup Instantly](#trigger-backup-instantly)
+- [Default Backup](#default-backup)
+- [Auto Recovery](#auto-recovery)
 
-User will be able to backup data from the volumes mounted in a workload.
+## Backup Workload Data
+
+User will be able to backup data from  a running workload.
 
 **What user have to do?**
 
 - Create a `Repository` crd.
-- Create a `Backup` crd pointing to targeted workload.
+- Create a `BackupConfiguration` crd pointing to targeted workload.
 
 Sample `Repository` crd:
 
@@ -40,33 +44,30 @@ spec:
     storageSecretName: gcs-secret
 ```
 
-Sample `Backup` crd:
+Sample `BackupConfiguration` crd:
 
 ```yaml
 apiVersion: stash.appscode.com/v1alpha2
-kind: Backup
+kind: BackupConfiguration
 metadata:
-  name: backup-volume-demo
+  name: backup-workload-data
   namespace: demo
 spec:
   schedule: '@every 1h'
-  # backupAgent indicates AgentTemplate crd to use for backup the target volume.
-  # stash will create some default AgentTemplate  while install to backup/recover various resources.
-  # user can also crate their own AgentTemplate to customize backup/recovery
-  backupAgent:
-    name: stashVolumeBackup
+  # <no stashTemplate required for sidecar model>
   # repository refers to the Repository crd that hold backend information
   repository:
     name: stash-backup-repo
-  # targetRef indicate the target workload that we want to backup
-  targetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: stash-demo
+  # target indicate the target workload that we want to backup
+  target:
+    workload:
+      apiVersion: apps/v1
+      kind: Deployment
+      name: stash-demo
   # targetDirectories indicates the directories inside the workload we want to backup
   targetDirectories:
   - /source/data
-# retentionPolicies specify the policy to follow to clean old backup snapshots
+  # retentionPolicies specify the policy to follow to clean old backup snapshots
   retentionPolicy:
     keepLast: 5
     prune: true
@@ -84,49 +85,40 @@ spec:
 
 **How it will work?**
 
-- Stash will watch for `Backup` crd. When it will find a  `Backup` crd, it will inject a sidecar container to the workload.
-- Sidecar container will take periodic backup of target directories.
+- Stash will watch for `BackupCofiguration` crd. When it will find a  `BackupConfiguration` crd, it will inject a `sidecar` container to the workload and start a `cron` for scheduled backup.
+- In each schedule, the `cron` will create `BackupInstance` crd.
+- The `sidecar` container watches for `BackupInstance` crd. If it find one, it will take backup instantly and update `BackupInstance` status accordingly.
 
-## Recover Volume
-
-User will be able to recover backed up data  either into a separate volume or into the same workload from where the backup was taken.
-
-### Recover into a Volume
-
-**What user have to do?**
-
-- Create a `Recovery` crd pointing `recoverTo` field to the target volume where the recovered data will be stored.
-
-Sample `Recovery` crd to recover into a volume:
+Sample `BackupInstance` crd:
 
 ```yaml
 apiVersion: stash.appscode.com/v1alpha2
-kind: Recovery
+kind: BackupInstance
 metadata:
-  name: recovery-volume-demo
+  name: backup-volume-demo-instance
   namespace: demo
 spec:
-  repository:
-    name: stash-backup-repo
-    namespace: demo
-  recoveryAgent: stashVolumeRecovery
-  # paths specifies the directories to recover from the backed up data
-  paths:
-    - /source/data
-  recoverTo:
-    # indicates the volume where the recovered data will be stored
-    volume:
-      mountPath: /source/data
-      persistentVolumeClaim:
-        claimName: stash-recovered
+  # targetBackupConfiguration indicates the BackupConfiguration crd of respective target that we want to backup
+  targetBackupConfiguration:
+    name: backup-volume-demo
+status:
+  observedGeneration: 239844#2
+  phase: Succeed
+  stats:
+    snapshot: 40dc1520
+    size: 1.720 GiB
+    uploaded: 1.200 GiB # upload size can be smaller than original file size if there are some duplicate files
+    fileStats:
+      new: 5307
+      changed: 0
+      unmodified: 0
 ```
 
-**How it will work?**
 
-- When Stash will find a `Recovery` crd created to recover into a volume, it will launch a Job to recover to that volume.
-- The recovery Job will recover data store recovered data to specified volume.
 
-### Recover into same Workload
+## Recover Workload Data
+
+User will be able to recover backed up data  either into a separate volume or into the same workload from where the backup was taken. Here, is an example for recovering into same workload.
 
 **What user have to do?**
 
@@ -144,9 +136,8 @@ spec:
   repository:
     name: stash-backup-repo
     namespace: demo
-  recoveryAgent: pgRecovery
   paths:
-    - /source/data
+  - /source/data
   recoverTo:
     # indicates the running workload where we want to recover
     workload:
@@ -163,6 +154,88 @@ spec:
 
 > **Warning:** Recover in same workload require to restart the workload. So, there will be downtime of the workload.
 
+## Backup Volume
+
+User will be also able to backup stand-alone volumes. This is useful for `ReadOnlyMany` or `ReadWriteMany` type volumes.
+
+**What user have to do?**
+
+- Create a `Repository` crd for respective backend.
+
+- Create a `BackupConfiguration` crd pointing `target` field to the volume.
+
+Sample `BackupConfiguration` crd to backup a PVC:
+
+```yaml
+apiVersion: stash.appscode.com/v1alpha2
+kind: BackupConfiguration
+metadata:
+  name: backup-volume-demo
+  namespace: demo
+spec:
+  schedule: '@every 1h'
+  # stashTemplate indicates StashTemplate crd to use for backup the target volume.
+  # stash will create some default StashTemplate  while install to backup/recover various resources.
+  # user can also crate their own StashTemplate to customize backup/recovery
+  stashTemplate: volumeBackup
+  # repository refers to the Repository crd that hold backend information
+  repository:
+    name: stash-backup-repo
+  # target indicate the target workload that we want to backup
+  target:
+    volume:
+      mountPath: /source/data
+      persistentVolumeClaim:
+        claimName: stash-recovered
+  # retentionPolicies specify the policy to follow to clean old backup snapshots
+  retentionPolicy:
+    keepLast: 5
+    prune: true
+```
+
+**How it will work?**
+
+1. Stash will create a `CronJob` using information of respective `StashTemplate` crd specified by `stashTeplate` field.
+2. The `CronJob` will take periodic backup of the target volume.
+
+## Recover Volume
+
+User will be able to recover backed up data  into a  volume.
+
+**What user have to do?**
+
+- Create a `Recovery` crd pointing `recoverTo` field to the target volume where the recovered data will be stored.
+
+Sample `Recovery` crd to recover into a volume:
+
+```yaml
+apiVersion: stash.appscode.com/v1alpha2
+kind: Recovery
+metadata:
+  name: recovery-volume-demo
+  namespace: demo
+spec:
+  repository:
+    name: stash-backup-repo
+    namespace: demo
+  # stashTemplate indicates StashTemplate crd to use for creating recovery job
+  stashTemplate: volumeRecovery
+  # paths specifies the directories to recover from the backed up data
+  paths:
+  - /source/data
+  recoverTo:
+    # indicates the volume where the recovered data will be stored
+    volume:
+      mountPath: /source/data
+      persistentVolumeClaim:
+        claimName: stash-recovered
+```
+
+**How it will work?**
+
+- When Stash will find a `Recovery` crd created to recover into a volume, it will launch a Job to recover into that volume.
+- The recovery Job will recover and store recovered data to the specified volume.
+
 ## Backup Database
 
 User will be able to backup database using Stash.
@@ -171,7 +244,7 @@ User will be able to backup database using Stash.
 
 - Create a `Repository` crd for respective backend.
 - Create an `AppBinding` crd which holds connection information for the database. If the database is deployed with [KubeDB](https://kubedb.com/docs/0.9.0/welcome/), `AppBinding` crd will be created automatically for each database.
-- Create a `Backup` crd pointing to the `AppBinding` crd.
+- Create a `BackupConfiguration` crd pointing to the `AppBinding` crd.
 
 Sample `AppBinding` crd:
 
@@ -196,27 +269,27 @@ spec:
   type: kubedb.com/postgres
 ```
 
-Sample `Backup` crd for database backup:
+Sample `BackupConfiguration` crd for database backup:
 
 ```yaml
 apiVersion: stash.appscode.com/v1alpha2
-kind: Backup
+kind: BackupConfiguration
 metadata:
   name: backup-database-demo
   namespace: demo
 spec:
   schedule: '@every 1h'
-  # backupAgent indicates AgentTemplate crd to use for backup the target database.
-  backupAgent:
-    name: pgBackup
+  # stashTemplate indicates StashTemplate crd to use for backup the target database.
+  stashTemplate: pgBackup
   # repository refers to the Repository crd that hold backend information
   repository:
     name: stash-backup-repo
-  # targetRef indicates the respective AppBinding crd for target database
-  targetRef:
-    apiVersion: appcatalog.appscode.com/v1alpha1
-    kind: AppBinding
-    name: quick-postgres
+  # target indicates the respective AppBinding crd for target database
+  target:
+    workload:
+      apiVersion: appcatalog.appscode.com/v1alpha1
+      kind: AppBinding
+      name: quick-postgres
   # retentionPolicies specify the policy to follow to clean old backup snapshots
   retentionPolicy:
     keepLast: 5
@@ -227,8 +300,8 @@ spec:
     # these arguments will be passed to the backup command.
     # you can use it to backup specific database. by default stash will backup all databases
     args:
-      - mydb
-      - anotherdb
+    - mydb
+    - anotherdb
     resources:
       requests:
         memory: "64Mi"
@@ -244,7 +317,7 @@ spec:
 
 **How it will work?**
 
-- When Stash will see a `Backup` crd for database backup, it will lunch  a CronJob to take periodic backup of this database.
+- When Stash will see a `BackupConfiguration` crd for database backup, it will lunch  a `CronJob` to take periodic backup of this database.
 
 ## Recover Database
 
@@ -266,7 +339,8 @@ spec:
   repository:
     name: stash-backup-repo
     namespace: demo
-  recoveryAgent: pgRecovery
+  # stashTemplate indicates StashTemplate crd to use for creating recovery job
+  stashTemplate: pgRecovery
   recoverTo:
     # indicates the respective AppBinding crd for target database that we want to initialize from backup
     workload:
@@ -277,7 +351,49 @@ spec:
 
 **How it will work?:**
 
-- Stash will lunch a Job to recover the backed up database and initialize target with this recovered this.
+- Stash will lunch a Job to recover the backed up database and initialize target with this recovered data.
+
+## Cluster YAML Backup
+
+User will be able to backup yaml of the cluster resources. However, currently stash will not provide automatic recover cluster from the YAMLs. So, user will have to create them manually.
+
+In future, Stash might be able to backup and recover not only YAMLs but also entire cluster.
+
+**What user have to do?**
+
+- Create a `Repository` crd for respective backend.
+- Create a `BackupConfiguration` crd with `stashTemplate` field point to a `StashTemplate` crd that backup cluster.
+
+Sample `BackupConfiguration` crd to backup YAMLs of cluster resources:
+
+```yaml
+apiVersion: stash.appscode.com/v1alpha2
+kind: BackupConfiguration
+metadata:
+  name: cluster-backup-demo
+  namespace: demo
+spec:
+  schedule: '@every 1h'
+  # stashTemplate indicates StashTemplate crd to use for backup the cluster.
+  stashTemplate: clusterBackup
+  # repository refers to the Repository crd that hold backend information
+  repository:
+    name: stash-backup-repo
+  # <no target required for cluster backup>
+  # retentionPolicies specify the policy to follow to clean old backup snapshots
+  retentionPolicy:
+    keepLast: 5
+    prune: true
+  # podAttributes is an optional field that can be used to set some attributes such as nodeSelector, affinity, toleration etc. for the backup job
+  podAttributes:
+    # ServiceAccount `stash-cluster-backup` must have read permission of all resources of the cluster
+    serviceAccountName: stash-cluster-backup
+```
+
+**How it will work?**
+
+- Stash will lunch a `CronJob` using informations of the `StashTemplate` crd specified through `stashTemplate` filed.
+- The `CronJob` will take periodic backup of the cluster.
 
 ## Trigger Backup Instantly
 
@@ -285,43 +401,45 @@ User will be able to trigger a scheduled backup instantly.
 
 **What user have to do?**
 
-- Create a `BackupTrigger` crd pointing to the target `Backup` crd.
+- Create a `BackupInstance` crd pointing to the target `BackupConfiguration` crd.
 
-Sample `BackupTrigger` crd:
+Sample `BackupInstance` crd for triggering instant backup:
 
 ```yaml
 apiVersion: stash.appscode.com/v1alpha2
-kind: BackupTrigger
+kind: BackupInstance
 metadata:
-  name: backup-volume-demo-trigger
+  name: backup-volume-demo-instance
   namespace: demo
 spec:
-  # targetBackup indicates the backup crd that we want to trigger to take instant backup
-  targetBackup:
+  # targetBackupConfiguration indicates the BackupConfiguration crd of respective target that we want to backup
+  targetBackupConfiguration:
     name: backup-volume-demo
 ```
 
 **How it will work?**
 
-- For scheduled volume backup through sidecar container,  Stash will lunch a `go-routine` to take instant backup.
-- For scheduled database backup through CronJob, Stash will lunch another job to take instant backup of the database.
+- For scheduled  backup through `sidecar` container, the `sidecar` container will take instant backup as it watches for `BackupInstance` crd.
+- For scheduled backup through `CronJob`, Stash will lunch another job to take instant backup of the target.
 
 ## Default Backup
 
-User will also be able to configure a Default backup for the cluster. So, user will no longer need to create  `Repository` and  `Backup` crd for every workload he want to backup. Instead, he will need to add some annotations to the target workload.
+User will also be able to configure a `default` backup for the cluster. So, user will no longer need to create  `Repository` and  `BackupConfiguration` crd for every workload he want to backup. Instead, he will need to add some annotations to the target workload.
 
 **What user have to do?**
 
-- Create a `BackupTemplate` crd which will hold backend information and backup information.
-- Add some annotations to the target workload . If the target is a database then add the annotations to respective `AppBinding` crd.
+- Create a `DefaultBackupConfiguration` crd which will hold backend information and backup information.
+- Add some annotations to the target. If the target is a database then add the annotations to respective `AppBinding` crd.
 
-Sample `BackupTemplate` crd for volume backup:
+### Default Backup of Workload Data
+
+Sample `DefaultBackupConfiguration` crd to backup workload data:
 
 ```yaml
 apiVersion: stash.appscode.com/v1alpha2
-kind: BackupTemplate
+kind: DefaultBackupConfiguration
 metadata:
-  name: volume-backup-template
+  name: default-workload-data-backup-configuration
 spec:
   backend:
     gcs:
@@ -329,28 +447,6 @@ spec:
       prefix: ${metadata.namespace}/${metadata.name} # this prefix template will be used to initialize repository in different directory in backend.
     storageSecretName: gcs-secret
   schedule: '@every 1h'
-  backupAgent: stashVolumeBackup
-  retentionPolicy:
-    name: 'keep-last-5'
-    keepLast: 5
-    prune: true
-```
-
-Sample `BackupTemplate` crd for database backup:
-
-```yaml
-apiVersion: stash.appscode.com/v1alpha2
-kind: BackupTemplate
-metadata:
-  name: database-backup-template
-spec:
-  backend:
-    gcs:
-      bucket: stash-backup-repo
-      prefix: ${metadata.namespace}/${metadata.name} # this prefix template will be used to initialize repository in different directory in backend.
-    storageSecretName: gcs-secret
-  schedule: '@every 1h'
-  backupAgent: pgBackup
   retentionPolicy:
     name: 'keep-last-5'
     keepLast: 5
@@ -371,7 +467,7 @@ metadata:
   annotations:
     stash.appscode.com/backup: true
     stash.appscode.com/targetDirectories: "[/source/data]"
-    stash.appscode.com/backupTemplate: "volume-backup-template"
+    stash.appscode.com/StashTemplate: "volume-backup-template"
 spec:
   replicas: 1
   selector:
@@ -400,6 +496,76 @@ spec:
           name: stash-sample-data
 ```
 
+
+
+### Default Backup of a PVC
+
+Sample `DefaultBackupConfiguration` crd for stand-alone pvc backup:
+
+```yaml
+apiVersion: stash.appscode.com/v1alpha2
+kind: DefaultBackupConfiguration
+metadata:
+  name: default-volume-backup-configuration
+spec:
+  backend:
+    gcs:
+      bucket: stash-backup-repo
+      prefix: ${metadata.namespace}/${metadata.name} # this prefix template will be used to initialize repository in different directory in backend.
+    storageSecretName: gcs-secret
+  schedule: '@every 1h'
+  stashTemplate: volumeBackup
+  retentionPolicy:
+    name: 'keep-last-5'
+    keepLast: 5
+    prune: true
+```
+
+Sample PVC with annotation for default backup:
+
+```yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: demo-pvc
+  namespace: demo
+  # if stash find bellow annotations, it will take backup of it.
+  annotations:
+    stash.appscode.com/backup: true
+    stash.appscode.com/stashTemplate: "volumeBackup"
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+```
+
+
+
+### Default Backup of Database
+
+Sample `DefaultBackupConfiguration` crd for database backup:
+
+```yaml
+apiVersion: stash.appscode.com/v1alpha2
+kind: DefaultBackupConfiguration
+metadata:
+  name: database-default-backup-configuration
+spec:
+  backend:
+    gcs:
+      bucket: stash-backup-repo
+      prefix: ${metadata.namespace}/${metadata.name} # this prefix template will be used to initialize repository in different directory in backend.
+    storageSecretName: gcs-secret
+  schedule: '@every 1h'
+  stashTemplate: pgBackup
+  retentionPolicy:
+    name: 'keep-last-5'
+    keepLast: 5
+    prune: true
+```
+
 Sample `AppBinding` crd with annotations for default backup:
 
 ```yaml
@@ -414,7 +580,7 @@ metadata:
     # if stash find bellow annotations, it will take backup of it.
     annotations:
       stash.appscode.com/backup: true
-      stash.appscode.com/backupTemplate: "database-backup-template"
+      stash.appscode.com/stashTemplate: "pgBackup"
 spec:
   clientConfig:
     insecureSkipTLSVerify: true
@@ -431,7 +597,7 @@ spec:
 
 **How it will work?**
 
-- Stash will watch the workloads and `AppBinding` crds. When Stash will find an workload/AppBinding crd with these annotations, it will create a `Repository` crd and a `Backup` crd using the information from respective `BackupTemplate`.
+- Stash will watch the workloads, volume and `AppBinding` crds. When Stash will find an workload/volume/AppBinding crd with these annotations, it will create a `Repository` crd and a `BackupConfiguration` crd using the information from respective `StashTemplate`.
 - Then, Stash will take normal backup as discussed earlier.
 
 
@@ -456,9 +622,8 @@ spec:
   repository:
     name: stash-backup-repo
     namespace: demo
-  recoveryAgent: pgRecovery
   paths:
-    - /source/data
+  - /source/data
   recoverTo:
     # indicates the running workload where we want to recover
     workload:
@@ -478,129 +643,230 @@ spec:
 
 
 
-## AgentTemplates
+## Action
 
-Sample `AgentTemplate` for backup volume:
+`Action` are independent single-containered workload specification that perform only single task. For example, [pgBackup](#pgbackup) takes backup a PostgreSQL database and [clusterBackup](#clusterbackup) takes backup of YAMLs of cluster resources. `Action` crd has some variable fields with `$` prefix which hast be resolved while creating respective workload. You can consider these variable fields as input for an `Action` .
+
+Some example `Action` definition is given below:
+
+#### clusterBackup
 
 ```yaml
+# clusterBackup action backup yamls of all resources of the cluster
 apiVersion: stash.appscode.com/v1alpha2
-kind: AgentTemplate
+kind: Action
 metadata:
-  name: stashVolumeBackup
+  name: clusterBackup
 spec:
-  containers:
-  - image: appscode/stash:0.8.2
-    name:  stash-backup
+  container:
+    image: appscode/cluster-backup:0.1.0
+    name:  cluster-backup
+    command: ["backup"]
     args:
-    - backup
-    - --backup-name=$(BACKUP_NAME)
-    - --pushgateway-url=$(PUSH_GATEWAY_URL)
-    - --enable-status-subresource=$(ENABLE_STATUS_SUB_RESOURCE)
-    - --enable-analytics=$(ENABLE_ANALYSTICS)
+    - sanitize=$(sanitize)
+    env:
+    - name: RESTIC_REPOSITORY
+      value: $(repository)
+    envFrom:
+    - secretRef:
+        name: $(storageSecret)
 ```
 
-Sample `AgentTemplate` for recover volume:
+#### pgBackup
 
 ```yaml
+# pgBackup action backup a PostgreSQL database
 apiVersion: stash.appscode.com/v1alpha2
-kind: AgentTemplate
-metadata:
-  name: stashVolumeRecovery
-spec:
-  containers:
-  - image: appscode/stash:0.8.2
-    name:  stash-recover
-    args:
-    - recover
-    - --recovery-name=$(RECOVERY_NAME)
-    - --pushgateway-url=$(PUSH_GATEWAY_URL)
-    - --enable-status-subresource=$(ENABLE_STATUS_SUB_RESOURCE)
-    - --enable-analytics=$(ENABLE_ANALYSTICS)
-```
-
-Sample `AgentTemplate` for backup PostgreSQL database:
-
-```yaml
-apiVersion: stash.appscode.com/v1alpha2
-kind: AgentTemplate
+kind: Action
 metadata:
   name: pgBackup
 spec:
-  initContainers:
-  # stash-init initialize repository if it does not exist in the backend
-  - image: appscode/stash:0.8.2
-    name: stash-init
-    args:
-    - init
-    - --backup-name=$(BACKUP_NAME)
-  # postgres-tools take backup of the database
-  - image: kubedb/postgres-tools:0.9.0
+  container:
+    image: kubedb/postgres-tools:0.9.0
     name:  postgres-tools
     command: ["backup"]
+    args: [$(databases)]
     env:
     - name:  PGPASSWORD
       valueFrom:
         secretKeyRef:
-          name: <secret name>
+          name: $(databaseSecret)
           key: "POSTGRES_PASSWORD"
     - name:  DB_USER
       valueFrom:
         secretKeyRef:
-          name: <secret name>
+          name: $(databaseSecret)
           key: "POSTGRES_USER"
     - name:  DB_HOST
-      value: <host url>
+      value: $(host)
     - name: DATA_DIR
-      value: <data-dir>
-  containers:
-  # stash-update-status update Repository crd status and push backup metrics to pushgateway
-  - image: appscode/stash:0.8.2
-    name:  stash-update-status
-    args:
-    - update-repo-status
-    - --backup-name=$(BACKUP_NAME)
-    - --pushgateway-url=$(PUSH_GATEWAY_URL)
-    - --enable-status-subresource=$(ENABLE_STATUS_SUB_RESOURCE)
-    - --metrics-dir=/tmp/metrics.txt
+      value: $(dataDir=/tmp/backup)
+    - name: RESTIC_REPOSITORY
+      value: $(repository)
+    envFrom:
+    - secretRef:
+        name: $(storageSecret)
 ```
 
-Sample `AgentTemplate` to recover PostgreSQL database:
+#### pgRecovery
 
 ```yaml
+# pgBackup action backup a PostgreSQL database
 apiVersion: stash.appscode.com/v1alpha2
-kind: AgentTemplate
+kind: Action
 metadata:
   name: pgRecovery
 spec:
-  initContainers:
-  # postgres-tools recover backup and initialize database
-  - image: kubedb/postgres-tools:0.9.0
+  container:
+    image: kubedb/postgres-tools:0.9.0
     name:  postgres-tools
     command: ["recover"]
     env:
-      - name:  PGPASSWORD
-        valueFrom:
-          secretKeyRef:
-            name: <secret name>
-            key: "POSTGRES_PASSWORD"
-      - name:  DB_USER
-        valueFrom:
-          secretKeyRef:
-            name: <secret name>
-            key: "POSTGRES_USER"
-      - name:  DB_HOST
-        value: <host url>
-      - name: DATA_DIR
-        value: <data-dir>
-  containers:
-    # stash-update-status update Repository crd status and push recovery metrics to pushgateway
-    - image: appscode/stash:0.8.2
-      name:  stash-update-status
-      args:
-      - update-recovery-status
-      - --recovery-name=$(RECOVERY_NAME)
-      - --pushgateway-url=$(PUSH_GATEWAY_URL)
-      - --enable-status-subresource=$(ENABLE_STATUS_SUB_RESOURCE)
-      - --metrics-dir=/tmp/metrics.txt
+    - name:  PGPASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: $(databaseSecret)
+          key: "POSTGRES_PASSWORD"
+    - name:  DB_USER
+      valueFrom:
+        secretKeyRef:
+          name: $(databaseSecret)
+          key: "POSTGRES_USER"
+    - name:  DB_HOST
+      value: $(host)
+    - name: DATA_DIR
+      value: $(dataDir=/tmp/backup)
+    - name: RESTIC_REPOSITORY
+      value: $(repository)
+    envFrom:
+    - secretRef:
+        name: $(storageSecret)
+```
+
+#### stashInit
+
+```yaml
+# stashInit action initialize a repository in the backend and creates a Repository crd
+apiVersion: stash.appscode.com/v1alpha2
+kind: Action
+metadata:
+  name: stashInit
+spec:
+  container:
+    image: appscode/stash:0.9.0
+    name:  stash-init
+    command: ["init"]
+    args:
+    - repository=$(repoName)
+    envFrom:
+    - secretRef:
+        name: $(storageSecret)
+```
+
+## stashUpdateRepo
+
+```yaml
+# stashUpdateRepo update Repository and BackupInstance status for respective backup
+apiVersion: stash.appscode.com/v1alpha2
+kind: Action
+metadata:
+  name: stashUpdateRepo
+spec:
+  container:
+    image: appscode/stash:0.9.0
+    name:  stash-repo-update
+    command: ["update-repo"]
+    args:
+    - repository=$(repoName)
+    - backupInstance=$(backupInstantName)
+    envFrom:
+    - secretRef:
+        name: $(storageSecret)
+```
+
+
+
+## StashTemplate
+
+A complete backup process may need to perform multiple actions. For example, if you want to backup a PostgreSQL database, we need to initialize a `Repository`, then backup the database and finally update `Repository` status to inform backup is completed or push backup metrics to a `pushgateway` . `StashTemplate` specifies these actions sequentially along with their inputs.
+
+
+
+We have chosen to break complete backup process into several actions because if a user want to take backup a PostgreSQL database in a Serverless platform, he can just use `pgBackup` action part as a function.
+
+Some sample `StashTemplate` is given below:
+
+#### pgBackup
+
+```yaml
+# pgBackup specifies required actions and their inputs to backup a PostgreSQL database
+apiVersion: stash.appscode.com/v1alpha2
+kind: StashTemplate
+metadata:
+  name: pgBackup
+spec:
+  actions:
+  - name: stashInit
+    inputs:
+      repoName: repositoryName # operator will provide these value
+      storageSecret: storageSecret
+  - name: pgBackup
+    inputs:
+      databases: databases
+      databaseSecret: databaseSecret
+      host: hostURL
+      repository: resticRepository
+      storageSecret: storageSecret
+  - name: stashUpdateRepo
+    inputs:
+      repoName: repoName
+      storageSecret: storageSecret
+```
+
+#### pgRecovery
+
+```yaml
+# pgRecovery specifies required actions and their inputs to recover a PostgreSQL database from backup
+apiVersion: stash.appscode.com/v1alpha2
+kind: StashTemplate
+metadata:
+  name: pgRecovery
+spec:
+  actions:
+  - name: pgRecovery
+    inputs:
+      databases: databases
+      databaseSecret: databaseSecret
+      host: hostURL
+      repository: resticRepository
+      storageSecret: storageSecret
+  - name: stashUpdateRecovery
+    inputs:
+      recoveryName: recoveryName
+```
+
+#### clusterBackup
+
+```yaml
+# clusterBackup specifies required actions and their inputs to backup cluster yaml
+apiVersion: stash.appscode.com/v1alpha2
+kind: StashTemplate
+metadata:
+  name: clusterBackup
+spec:
+  actions:
+  - name: stashInit
+    inputs:
+      repoName: repositoryName # operator will provide these value
+      storageSecret: storageSecret
+  - name: clusterBackup
+    inputs:
+      sanitize: <sanitize>
+      repository: resticRepository
+      storageSecret: storageSecret
+  - name: stashUpdateRepo
+    inputs:
+      repoName: repoName
+      storageSecret: storageSecret
 ```
 

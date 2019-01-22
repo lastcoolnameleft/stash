@@ -1,0 +1,30 @@
+# pgBackup action backup a PostgreSQL database
+apiVersion: stash.appscode.com/v1alpha2
+kind: Action
+metadata:
+  name: pgRecovery
+spec:
+  container:
+    image: kubedb/postgres-tools:0.9.0
+    name:  postgres-tools
+    command: ["recover"]
+    env:
+    - name:  PGPASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: $(databaseSecret)
+          key: "POSTGRES_PASSWORD"
+    - name:  DB_USER
+      valueFrom:
+        secretKeyRef:
+          name: $(databaseSecret)
+          key: "POSTGRES_USER"
+    - name:  DB_HOST
+      value: $(host)
+    - name: DATA_DIR
+      value: $(dataDir=/tmp/backup)
+    - name: RESTIC_REPOSITORY
+      value: $(repository)
+    envFrom:
+    - secretRef:
+        name: $(storageSecret)
