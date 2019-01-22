@@ -9,7 +9,7 @@ metadata:
     # if stash find bellow annotations, it will take backup of it.
     annotations:
       stash.appscode.com/backup: true
-      stash.appscode.com/backupTemplate: "database-backup-template"
+      stash.appscode.com/stashTemplate: "pgBackup"
 spec:
   clientConfig:
     insecureSkipTLSVerify: true

@@ -1,0 +1,19 @@
+# volumeBackup action backup a kubernetes volume
+apiVersion: stash.appscode.com/v1alpha2
+kind: Action
+metadata:
+  name: volumeBackup
+spec:
+  container:
+    image: appscode/volume-tool:0.1.0
+    name:  volume-backup
+    command: ["backup"]
+    env:
+    - name: RESTIC_REPOSITORY
+      value: $(repository)
+    envFrom:
+    - secretRef:
+        name: $(storageSecret)
+    volumeMounts:
+    - name: $(volumeName)
+      mountPath: /source/data

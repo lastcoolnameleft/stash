@@ -7,7 +7,8 @@ spec:
   repository:
     name: stash-backup-repo
     namespace: demo
-  recoveryAgent: pgRecovery
+  # stashTemplate indicates StashTemplate crd to use for creating recovery job
+  stashTemplate: pgRecovery
   recoverTo:
     # indicates the respective AppBinding crd for target database that we want to initialize from backup
     workload:

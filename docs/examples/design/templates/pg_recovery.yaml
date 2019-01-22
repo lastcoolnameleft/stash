@@ -1,0 +1,17 @@
+# pgRecovery specifies required actions and their inputs to recover a PostgreSQL database from backup
+apiVersion: stash.appscode.com/v1alpha2
+kind: StashTemplate
+metadata:
+  name: pgRecovery
+spec:
+  actions:
+  - name: pgRecovery
+    inputs:
+      databases: databases
+      databaseSecret: databaseSecret
+      host: hostURL
+      repository: resticRepository
+      storageSecret: storageSecret
+  - name: stashUpdateRecovery
+    inputs:
+      recoveryName: recoveryName

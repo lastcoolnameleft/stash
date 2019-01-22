@@ -1,0 +1,15 @@
+# stashInit action initialize a repository in the backend and creates a Repository crd
+apiVersion: stash.appscode.com/v1alpha2
+kind: Action
+metadata:
+  name: stashInit
+spec:
+  container:
+    image: appscode/stash:0.9.0
+    name:  stash-init
+    command: ["init"]
+    args:
+    - repository=$(repoName)
+    envFrom:
+    - secretRef:
+        name: $(storageSecret)

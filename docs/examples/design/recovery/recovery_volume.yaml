@@ -7,10 +7,11 @@ spec:
   repository:
     name: stash-backup-repo
     namespace: demo
-  recoveryAgent: stashVolumeRecovery
+  # stashTemplate indicates StashTemplate crd to use for creating recovery job
+  stashTemplate: volumeRecovery
   # paths specifies the directories to recover from the backed up data
   paths:
-    - /source/data
+  - /source/data
   recoverTo:
     # indicates the volume where the recovered data will be stored
     volume:

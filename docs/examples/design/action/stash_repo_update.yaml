@@ -1,0 +1,16 @@
+# stashUpdateRepo update Repository and BackupInstance status for respective backup
+apiVersion: stash.appscode.com/v1alpha2
+kind: Action
+metadata:
+  name: stashUpdateRepo
+spec:
+  container:
+    image: appscode/stash:0.9.0
+    name:  stash-repo-update
+    command: ["update-repo"]
+    args:
+    - repository=$(repoName)
+    - backupInstance=$(backupInstantName)
+    envFrom:
+    - secretRef:
+        name: $(storageSecret)

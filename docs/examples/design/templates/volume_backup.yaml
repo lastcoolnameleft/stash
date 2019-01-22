@@ -1,0 +1,20 @@
+# volumeBackup specifies required actions and their inputs to backup a kubernetes volume
+apiVersion: stash.appscode.com/v1alpha2
+kind: StashTemplate
+metadata:
+  name: volumeBackup
+spec:
+  actions:
+  - name: stashInit
+    inputs:
+      repoName: repositoryName
+      storageSecret: storageSecret
+  - name: volumeBackup
+    inputs:
+      volumeName: targetVolumeName
+      repository: resticRepository
+      storageSecret: storageSecret
+  - name: stashUpdateRepo
+    inputs:
+      repoName: repoName
+      storageSecret: storageSecret

@@ -1,21 +1,21 @@
 apiVersion: stash.appscode.com/v1alpha2
-kind: Backup
+kind: BackupConfiguration
 metadata:
   name: backup-database-demo
   namespace: demo
 spec:
   schedule: '@every 1h'
-  # backupAgent indicates AgentTemplate crd to use for backup the target database.
-  backupAgent:
-    name: pgBackup
+  # stashTemplate indicates StashTemplate crd to use for backup the target database.
+  stashTemplate: pgBackup
   # repository refers to the Repository crd that hold backend information
   repository:
     name: stash-backup-repo
-  # targetRef indicates the respective AppBinding crd for target database
-  targetRef:
-    apiVersion: appcatalog.appscode.com/v1alpha1
-    kind: AppBinding
-    name: quick-postgres
+  # target indicates the respective AppBinding crd for target database
+  target:
+    workload:
+      apiVersion: appcatalog.appscode.com/v1alpha1
+      kind: AppBinding
+      name: quick-postgres
   # retentionPolicies specify the policy to follow to clean old backup snapshots
   retentionPolicy:
     keepLast: 5
@@ -26,8 +26,8 @@ spec:
     # these arguments will be passed to the backup command.
     # you can use it to backup specific database. by default stash will backup all databases
     args:
-      - mydb
-      - anotherdb
+    - mydb
+    - anotherdb
     resources:
       requests:
         memory: "64Mi"

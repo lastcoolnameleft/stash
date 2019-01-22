@@ -1,0 +1,19 @@
+# volumeRecovery action recover a kubernetes volume from backup data
+apiVersion: stash.appscode.com/v1alpha2
+kind: Action
+metadata:
+  name: volumeRecovery
+spec:
+  container:
+    image: appscode/volume-tool:0.1.0
+    name:  volume-recovery
+    command: ["recover"]
+    env:
+    - name: RESTIC_REPOSITORY
+      value: $(repository)
+    envFrom:
+    - secretRef:
+        name: $(storageSecret)
+    volumeMounts:
+    - name: $(volumeName)
+      mountPath: /source/data

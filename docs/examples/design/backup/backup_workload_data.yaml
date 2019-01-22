@@ -1,27 +1,24 @@
 apiVersion: stash.appscode.com/v1alpha2
-kind: Backup
+kind: BackupConfiguration
 metadata:
-  name: backup-volume-demo
+  name: backup-workload-data
   namespace: demo
 spec:
   schedule: '@every 1h'
-  # backupAgent indicates AgentTemplate crd to use for backup the target volume.
-  # stash will create some default AgentTemplate  while install to backup/recover various resources.
-  # user can also crate their own AgentTemplate to customize backup/recovery
-  backupAgent:
-    name: stashVolumeBackup
+  # <no stashTemplate required for sidecar model>
   # repository refers to the Repository crd that hold backend information
   repository:
     name: stash-backup-repo
-  # targetRef indicate the target workload that we want to backup
-  targetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: stash-demo
+  # target indicate the target workload that we want to backup
+  target:
+    workload:
+      apiVersion: apps/v1
+      kind: Deployment
+      name: stash-demo
   # targetDirectories indicates the directories inside the workload we want to backup
   targetDirectories:
   - /source/data
-# retentionPolicies specify the policy to follow to clean old backup snapshots
+  # retentionPolicies specify the policy to follow to clean old backup snapshots
   retentionPolicy:
     keepLast: 5
     prune: true

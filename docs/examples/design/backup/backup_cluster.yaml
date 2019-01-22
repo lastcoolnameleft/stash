@@ -1,0 +1,21 @@
+apiVersion: stash.appscode.com/v1alpha2
+kind: BackupConfiguration
+metadata:
+  name: cluster-backup-demo
+  namespace: demo
+spec:
+  schedule: '@every 1h'
+  # stashTemplate indicates StashTemplate crd to use for backup the cluster.
+  stashTemplate: clusterBackup
+  # repository refers to the Repository crd that hold backend information
+  repository:
+    name: stash-backup-repo
+  # <no target required for cluster backup>
+  # retentionPolicies specify the policy to follow to clean old backup snapshots
+  retentionPolicy:
+    keepLast: 5
+    prune: true
+  # podAttributes is an optional field that can be used to set some attributes such as nodeSelector, affinity, toleration etc. for the backup job
+  podAttributes:
+    # ServiceAccount `stash-cluster-backup` must have read permission of all resources of the cluster
+    serviceAccountName: stash-cluster-backup

@@ -1,0 +1,20 @@
+# clusterBackup specifies required actions and their inputs to backup cluster yaml
+apiVersion: stash.appscode.com/v1alpha2
+kind: StashTemplate
+metadata:
+  name: clusterBackup
+spec:
+  actions:
+  - name: stashInit
+    inputs:
+      repoName: repositoryName # operator will provide these value
+      storageSecret: storageSecret
+  - name: clusterBackup
+    inputs:
+      sanitize: <sanitize>
+      repository: resticRepository
+      storageSecret: storageSecret
+  - name: stashUpdateRepo
+    inputs:
+      repoName: repoName
+      storageSecret: storageSecret

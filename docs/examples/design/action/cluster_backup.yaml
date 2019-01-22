@@ -1,0 +1,18 @@
+# clusterBackup action backup yamls of all resources of the cluster
+apiVersion: stash.appscode.com/v1alpha2
+kind: Action
+metadata:
+  name: clusterBackup
+spec:
+  container:
+    image: appscode/cluster-backup:0.1.0
+    name:  cluster-backup
+    command: ["backup"]
+    args:
+    - sanitize=$(sanitize)
+    env:
+    - name: RESTIC_REPOSITORY
+      value: $(repository)
+    envFrom:
+    - secretRef:
+        name: $(storageSecret)

@@ -1,0 +1,22 @@
+# pgBackup specifies required actions and their inputs to backup a PostgreSQL database
+apiVersion: stash.appscode.com/v1alpha2
+kind: StashTemplate
+metadata:
+  name: pgBackup
+spec:
+  actions:
+  - name: stashInit
+    inputs:
+      repoName: repositoryName # operator will provide these value
+      storageSecret: storageSecret
+  - name: pgBackup
+    inputs:
+      databases: databases
+      databaseSecret: databaseSecret
+      host: hostURL
+      repository: resticRepository
+      storageSecret: storageSecret
+  - name: stashUpdateRepo
+    inputs:
+      repoName: repoName
+      storageSecret: storageSecret
