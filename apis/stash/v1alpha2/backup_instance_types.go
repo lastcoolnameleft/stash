@@ -7,8 +7,8 @@ import (
 
 const (
 	ResourceKindBackupInstance     = "BackupInstance"
-	ResourcePluralBackupInstance   = "backupInstances"
-	ResourceSingularBackupInstance = "backupInstance"
+	ResourcePluralBackupInstance   = "backupinstances"
+	ResourceSingularBackupInstance = "backupinstance"
 )
 
 // +genclient

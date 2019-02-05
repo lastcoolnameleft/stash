@@ -5,7 +5,7 @@ metadata:
   creationTimestamp: null
   labels:
     app: stash
-  name: defaultBackupConfigurations.stash.appscode.com
+  name: defaultbackupconfigurations.stash.appscode.com
 spec:
   additionalPrinterColumns:
   - JSONPath: .spec.stashTemplate
@@ -24,10 +24,10 @@ spec:
     - appscode
     - backup
     kind: DefaultBackupConfiguration
-    plural: defaultBackupConfigurations
+    plural: defaultbackupconfigurations
     shortNames:
     - dbc
-    singular: defaultBackupConfiguration
+    singular: defaultbackupconfiguration
   scope: Cluster
   subresources:
     status: {}
