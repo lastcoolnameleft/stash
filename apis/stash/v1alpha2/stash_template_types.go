@@ -6,8 +6,8 @@ import (
 
 const (
 	ResourceKindStashTemplate     = "StashTemplate"
-	ResourcePluralStashTemplate   = "stashTemplates"
-	ResourceSingularStashTemplate = "stashTemplate"
+	ResourcePluralStashTemplate   = "stashtemplates"
+	ResourceSingularStashTemplate = "stashtemplate"
 )
 
 // +genclient

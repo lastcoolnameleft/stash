@@ -8,10 +8,10 @@ import (
 
 const (
 	ResourceKindBackupConfiguration     = "BackupConfiguration"
-	ResourceSingularBackupConfiguration = "backupConfiguration"
-	ResourcePluralBackupConfiguration   = "backupConfigurations"
 	TargetVolumn                        = "Volume"
 	TargetWorkload                      = "Workload"
+	ResourceSingularBackupConfiguration = "backupconfiguration"
+	ResourcePluralBackupConfiguration   = "backupconfigurations"
 )
 
 // +genclient

@@ -6,8 +6,8 @@ import (
 
 const (
 	ResourceKindDefaultBackupConfiguration     = "DefaultBackupConfiguration"
-	ResourcePluralDefaultBackupConfiguration   = "defaultBackupConfigurations"
-	ResourceSingularDefaultBackupConfiguration = "defaultBackupConfiguration"
+	ResourcePluralDefaultBackupConfiguration   = "defaultbackupconfigurations"
+	ResourceSingularDefaultBackupConfiguration = "defaultbackupconfiguration"
 )
 
 // +genclient

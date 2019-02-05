@@ -5,7 +5,7 @@ metadata:
   creationTimestamp: null
   labels:
     app: stash
-  name: backupInstances.stash.appscode.com
+  name: backupinstances.stash.appscode.com
 spec:
   additionalPrinterColumns:
   - JSONPath: .spec.targetBackupConfiguration
@@ -24,10 +24,10 @@ spec:
     - backup
     - appscode
     kind: BackupInstance
-    plural: backupInstances
+    plural: backupinstances
     shortNames:
     - inst
-    singular: backupInstance
+    singular: backupinstance
   scope: Namespaced
   subresources:
     status: {}
