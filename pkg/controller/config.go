@@ -100,6 +100,7 @@ func (c *Config) New() (*StashController, error) {
 	ctrl.initRCWatcher()
 	ctrl.initReplicaSetWatcher()
 	ctrl.initJobWatcher()
+	ctrl.initBackupConfigurationWatcher()
 
 	return ctrl, nil
 }

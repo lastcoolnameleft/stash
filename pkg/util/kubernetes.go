@@ -15,6 +15,7 @@ import (
 	"github.com/appscode/kutil/tools/clientcmd"
 	"github.com/appscode/stash/apis"
 	api "github.com/appscode/stash/apis/stash/v1alpha1"
+	api_v1alpha2 "github.com/appscode/stash/apis/stash/v1alpha2"
 	cs "github.com/appscode/stash/client/clientset/versioned"
 	stash_listers "github.com/appscode/stash/client/listers/stash/v1alpha1"
 	"github.com/appscode/stash/pkg/docker"
@@ -78,6 +79,22 @@ func GetAppliedRestic(m map[string]string) (*api.Restic, error) {
 		return nil, fmt.Errorf("%s annotations has invalid Rectic object", api.LastAppliedConfiguration)
 	}
 	return restic, nil
+}
+
+func GetAppliedBackupConfiguration(m map[string]string) (*api_v1alpha2.BackupConfiguration, error) {
+	data := GetString(m, api_v1alpha2.LastAppliedConfiguration)
+	if data == "" {
+		return nil, nil
+	}
+	obj, err := meta.UnmarshalFromJSON([]byte(data), api_v1alpha2.SchemeGroupVersion)
+	if err != nil {
+		return nil, err
+	}
+	backupconfiguration, ok := obj.(*api_v1alpha2.BackupConfiguration)
+	if !ok {
+		return nil, fmt.Errorf("%s annotations has invalid BackupConfiguration object", api_v1alpha2.LastAppliedConfiguration)
+	}
+	return backupconfiguration, nil
 }
 
 func FindRestic(lister stash_listers.ResticLister, obj metav1.ObjectMeta) (*api.Restic, error) {
@@ -288,6 +305,17 @@ func EnsureVolumeDeleted(volumes []core.Volume, name string) []core.Volume {
 
 func ResticEqual(old, new *api.Restic) bool {
 	var oldSpec, newSpec *api.ResticSpec
+	if old != nil {
+		oldSpec = &old.Spec
+	}
+	if new != nil {
+		newSpec = &new.Spec
+	}
+	return meta.Equal(oldSpec, newSpec)
+}
+
+func BackupConfigurationEqual(old, new *api_v1alpha2.BackupConfiguration) bool {
+	var oldSpec, newSpec *api_v1alpha2.BackupConfigurationSpec
 	if old != nil {
 		oldSpec = &old.Spec
 	}

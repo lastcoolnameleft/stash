@@ -8,9 +8,11 @@ import (
 	crdutils "github.com/appscode/kutil/apiextensions/v1beta1"
 	"github.com/appscode/kutil/tools/queue"
 	api "github.com/appscode/stash/apis/stash/v1alpha1"
+	api_v1alpha2 "github.com/appscode/stash/apis/stash/v1alpha2"
 	cs "github.com/appscode/stash/client/clientset/versioned"
 	stashinformers "github.com/appscode/stash/client/informers/externalversions"
 	stash_listers "github.com/appscode/stash/client/listers/stash/v1alpha1"
+	stash_listers_v1alpha2 "github.com/appscode/stash/client/listers/stash/v1alpha2"
 	"github.com/golang/glog"
 	crd_api "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1beta1"
 	crd_cs "k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset/typed/apiextensions/v1beta1"
@@ -84,6 +86,11 @@ type StashController struct {
 	jobQueue    *queue.Worker
 	jobInformer cache.SharedIndexInformer
 	jobLister   batch_listers.JobLister
+
+	//BackupConfigurationController
+	bupcQueue    *queue.Worker
+	bupcInformer cache.SharedIndexInformer
+	bupcLister   stash_listers_v1alpha2.BackupConfigurationLister
 }
 
 func (c *StashController) ensureCustomResourceDefinitions() error {
@@ -91,6 +98,7 @@ func (c *StashController) ensureCustomResourceDefinitions() error {
 		api.Restic{}.CustomResourceDefinition(),
 		api.Recovery{}.CustomResourceDefinition(),
 		api.Repository{}.CustomResourceDefinition(),
+		api_v1alpha2.BackupConfiguration{}.CustomResourceDefinition(),
 	}
 	return crdutils.RegisterCRDs(c.crdClient, crds)
 }
@@ -140,6 +148,7 @@ func (c *StashController) RunInformers(stopCh <-chan struct{}) {
 	c.rcQueue.Run(stopCh)
 	c.rsQueue.Run(stopCh)
 	c.jobQueue.Run(stopCh)
+	c.bupcQueue.Run(stopCh)
 
 	<-stopCh
 	log.Infoln("Stopping Stash controller")

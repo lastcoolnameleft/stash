@@ -111,3 +111,7 @@ import:
   repo: https://github.com/kmodules/objectstore-api.git
   vcs: git
   version: release-9.0
+- package: kmodules.xyz/custom-resources
+  repo: https://github.com/kmodules/custom-resources.git
+  vcs: git
+  version: release-9.0

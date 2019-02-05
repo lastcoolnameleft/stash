@@ -10,6 +10,8 @@ const (
 	ResourceKindBackupConfiguration     = "BackupConfiguration"
 	ResourceSingularBackupConfiguration = "backupConfiguration"
 	ResourcePluralBackupConfiguration   = "backupConfigurations"
+	TargetVolumn                        = "Volume"
+	TargetWorkload                      = "Workload"
 )
 
 // +genclient
