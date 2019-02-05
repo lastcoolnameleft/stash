@@ -116,6 +116,7 @@ if [ "$STASH_ENABLE_WEBHOOK" = true ]; then
 fi
 
 if [ "$STASH_E2E_TEST" = false ]; then # don't run operator while run this script from test
+  hack/make.py
   stash run \
     --secure-port=8443 \
     --kubeconfig="$HOME/.kube/config" \

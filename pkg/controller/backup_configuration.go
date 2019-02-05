@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"fmt"
+
 	"github.com/appscode/go/log"
 	workload_api "github.com/appscode/kubernetes-webhook-util/apis/workload/v1"
 	batch_util "github.com/appscode/kutil/batch/v1beta1"
@@ -35,8 +37,10 @@ func (c *StashController) initBackupConfigurationWatcher() {
 						//err,
 					)
 				}
-				return
+				//return
 			}
+
+			queue.Enqueue(c.bupcQueue.GetQueue(), obj)
 		},
 		UpdateFunc: func(oldObj, newObj interface{}) {
 			oldBupc, ok := oldObj.(*api_v1alpha2.BackupConfiguration)
@@ -88,7 +92,11 @@ func (c *StashController) runBackupConfigurationInjector(key string) error {
 			return err
 		}
 		c.EnsureSidecarDeleted2(namespace, name)
-		c.EnsureCronJobDeleted(namespace, name)
+		err = c.EnsureCronJobDeleted(namespace, name)
+		fmt.Println(err)
+		if err != nil {
+			return err
+		}
 	} else {
 		backupconfiguration := obj.(*api_v1alpha2.BackupConfiguration)
 		glog.Info("Sync/Add/Update for BackupConfiguration %s", backupconfiguration.GetName())
@@ -281,7 +289,6 @@ func (c *StashController) StartCronJob(backupconfiguration *api_v1alpha2.BackupC
 				Name:  backupconfiguration.Name,
 				Image: "busybox",
 			})
-		in.Spec.JobTemplate.Spec.Template.Spec.ImagePullSecrets = backupconfiguration.Spec.ImagePullSecrets
 
 		in.Spec.JobTemplate.Spec.Template.Spec.RestartPolicy = core.RestartPolicyNever
 
@@ -294,13 +301,14 @@ func (c *StashController) StartCronJob(backupconfiguration *api_v1alpha2.BackupC
 	return nil
 }
 
-func (c *StashController) EnsureCronJobDeleted(namespace, name string) {
+func (c *StashController) EnsureCronJobDeleted(namespace, name string) error {
 
 	deletePolicy := metav1.DeletePropagationBackground
-	if err := c.kubeClient.BatchV1().Jobs(namespace).Delete(name, &metav1.DeleteOptions{
+	if err := c.kubeClient.BatchV1beta1().CronJobs(namespace).Delete(name, &metav1.DeleteOptions{
 		PropagationPolicy: &deletePolicy,
 	}); err != nil {
-		log.Fatal(err)
+		return err
 	}
 
+	return nil
 }
